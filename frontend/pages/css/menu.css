@@ -1,0 +1,109 @@
+/* ==========================================
+   DISPOSICIÓN DEL CUERPO Y MENÚ LATERAL HUD
+   ========================================== */
+.dash-body {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    margin-top: 20px;
+    gap: 30px;
+    overflow: hidden;
+}
+
+/* MENÚ LATERAL */
+.hud-sidebar {
+    margin-top: 20px;
+    width: 220px;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Empuja el contenido inferior al fondo */
+    border-right: 1px solid rgba(181, 34, 255, 0.25);
+    padding-right: 20px;
+    padding-bottom: 10px;
+    max-height: 94%;
+}
+
+.hud-nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+/* SECCIÓN INFERIOR DEL MENÚ */
+.hud-nav-bottom {
+    margin-top: auto; /* Empuja el perfil hasta abajo */
+    padding-top: 15px;
+    border-top: 1px stroke rgba(181, 34, 255, 0.2); /* Divisor sutil */
+    margin-bottom: 10px;
+}
+
+.hud-nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    /* gap: 12px; */
+}
+
+.hud-nav-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(181, 34, 255, 0.04);
+    border: 1px solid rgba(181, 34, 255, 0.2);
+    border-left: 3px solid transparent;
+    color: var(--neon-bright);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    margin-top: 20px;
+    /* clip-path: polygon(0 0, 92% 0, 100% 25%, 100% 100%, 8% 100%, 0 75%); */
+    transition: all 0.25s ease;
+}
+
+.hud-nav-item .nav-indicator {
+    margin-right: 10px;
+    color: var(--neon-secondary);
+    opacity: 0.4;
+    font-weight: bold;
+    transition: all 0.25s ease;
+}
+
+/* EFECTOS HOVER */
+.hud-nav-item:hover {
+    background: rgba(181, 34, 255, 0.15);
+    border-color: var(--neon-secondary);
+    border-left-color: var(--neon-bright);
+    box-shadow: 0 0 12px rgba(181, 34, 255, 0.35);
+    transform: translateX(4px);
+}
+
+.hud-nav-item:hover .nav-indicator {
+    opacity: 1;
+    color: #ffffff;
+    text-shadow: 0 0 6px var(--neon-bright);
+}
+
+/* ÍTEM ACTIVO (SELECCIONADO) */
+.hud-nav-item.active {
+    background: linear-gradient(90deg, rgba(181, 34, 255, 0.35) 0%, rgba(91, 0, 153, 0.1) 100%);
+    border-color: var(--neon-primary);
+    border-left: 3px solid var(--neon-bright);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(181, 34, 255, 0.4);
+    text-shadow: 0 0 6px var(--neon-bright);
+}
+
+.hud-nav-item.active .nav-indicator {
+    opacity: 1;
+    color: var(--neon-bright);
+    text-shadow: 0 0 8px var(--neon-primary);
+}
+
+/* ÁREA PRINCIPAL DE CONTENIDO */
+.hud-main-content {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+}

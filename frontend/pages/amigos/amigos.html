@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTask - Amigos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../../css/background.css">
+    <link rel="stylesheet" href="css/amigos.css">
+</head>
+<body class="crt-flicker">
+
+    <!-- Auras de Energía Neón -->
+    <div class="aura-wrapper">
+        <div class="aura-blob-1"></div>
+        <div class="aura-blob-2"></div>
+    </div>
+
+    <!-- Capa de desenfoque y partículas -->
+    <div id="blurLayer" class="background-blur-layer"></div>
+    <canvas id="crackCanvas"></canvas>
+
+    <!-- Overlays de pantalla CRT -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- MARCO HUD PRINCIPAL -->
+    <div class="hud-main-container">
+
+        <!-- CONTENEDOR DEL MARCO SVG -->
+        <div id="hud-frame-container"></div>
+
+        <!-- DASHBOARD PANEL -->
+        <div class="hud-dashboard-panel">
+            <!-- HEADER -->
+            <div class="dash-header">
+                <div>
+                    <h2 class="neon-text-glow">¡HOLA, <br><span id="user-name">ESTUDIANTE</span>!</h2>
+                    <p class="hud-subtext">[ ID DE USUARIO: #<span id="user-tag">------</span> ]</p>
+                </div> 
+                <button onclick="logout()" class="btn-logout">CERRAR SESIÓN</button>
+            </div>
+
+            <!-- CUERPO PRINCIPAL (MENÚ LATERAL Y CONTENIDO) -->
+            <div class="dash-body">
+                <!-- MENÚ NAVEGACIÓN LATERAL HUD -->
+                <nav class="hud-sidebar">
+                    <ul class="hud-nav-list">
+                        <li class="hud-nav-item" onclick="location.href='../dashboard/dashboard.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">INICIO</span>
+                        </li>
+                        <li class="hud-nav-item" onclick="location.href='../tareas/tareas.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">TAREAS</span>
+                        </li>
+                        <li class="hud-nav-item active" onclick="location.href='../amigos/amigos.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">AMIGOS</span>
+                        </li>
+                        <li class="hud-nav-item" onclick="location.href='../grupos/grupos.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">GRUPOS</span>
+                        </li>
+                        <li class="hud-nav-item" onclick="location.href='../estadisticas/estadisticas.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">ESTADÍSTICAS</span>
+                        </li>
+                    </ul>
+
+                    <!-- SECCIÓN INFERIOR DEL MENÚ -->
+                    <div class="hud-nav-bottom">
+                        <ul class="hud-nav-list">
+                            <li class="hud-nav-item" onclick="location.href='../perfil/perfil.html'">
+                                <span class="nav-indicator">></span>
+                                <span class="nav-text">PERFIL</span>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- CONTENIDO PRINCIPAL: GESTIÓN DE AMIGOS -->
+                <main class="hud-main-content">
+                    
+                    <!-- ENVOLTORIO DE CABECERA FIJA (TÍTULO + BOTÓN) -->
+                    <div class="friends-header-wrapper">
+                        <div class="friends-top-bar">
+                            <div class="section-title">
+                                <span class="neon-indicator">///</span>
+                                <h2>RED DE VÍNCULOS / AMIGOS</h2>
+                            </div>
+                            <button class="btn-hud-primary" onclick="toggleAddFriendModal(true)">
+                                <i class="fa-solid fa-user-plus"></i> AGREGAR AMIGO
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CONTENEDOR CON SCROLL INDEPENDIENTE (LAYOUT EN 2 COLUMNAS INVERTIDAS) -->
+                    <div class="friends-sections-container">
+                        
+                        <!-- COLUMNA IZQUIERDA: LISTA DE AMIGOS + BUSCADOR INTERNO -->
+                        <section class="friends-section friends-column">
+                            <div class="sub-section-title-bar">
+                                <div class="sub-section-title">
+                                    <span class="neon-indicator-small">></span>
+                                    <h3>LISTA DE AMIGOS</h3>
+                                </div>
+                                <!-- INPUT PARA FILTRAR LA LISTA DE AMIGOS -->
+                                <div class="friends-filter-wrapper">
+                                    <i class="fa-solid fa-magnifying-glass filter-icon"></i>
+                                    <input type="text" id="friend-list-filter" class="hud-input-sm" placeholder="Filtrar amigo..." oninput="filterLocalFriends(this.value)">
+                                </div>
+                            </div>
+
+                            <div id="friends-list-container" class="friends-grid">
+                                <div class="hud-card friend-card skeleton">Cargando red de aliados...</div>
+                            </div>
+                        </section>
+
+                        <!-- COLUMNA DERECHA: SOLICITUDES DE AMISTAD -->
+                        <section class="friends-section requests-column">
+                            <div class="sub-section-title">
+                                <span class="neon-indicator-small">></span>
+                                <h3>SOLICITUDES PENDIENTES</h3>
+                            </div>
+                            <div id="requests-list-container" class="friends-list-vertical">
+                                <div class="hud-card friend-card skeleton">Sin solicitudes pendientes...</div>
+                            </div>
+                        </section>
+
+                    </div>
+
+                </main>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL BUSCAR Y AGREGAR AMIGO -->
+    <div id="add-friend-modal" class="hud-modal-overlay hidden">
+        <div class="hud-card modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Buscar estudiante</h2>
+                <button class="btn-modal-close" onclick="toggleAddFriendModal(false)">✕</button>
+            </div>
+            
+            <form id="search-friend-form" onsubmit="handleSearchUser(event)">
+                <div class="form-group">
+                    <label for="search-query">Nombre o Tag de usuario (#ID) *</label>
+                    <div class="search-input-wrapper">
+                        <input type="text" id="search-query" class="hud-input" placeholder="Ej: Rolando o #102938" required>
+                        <button type="submit" class="btn-hud-primary">
+                            <i class="fa-solid fa-magnifying-glass"></i> BUSCAR
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- CONTENEDOR DE RESULTADOS DE BÚSQUEDA -->
+            <div id="search-results-container" class="search-results-list">
+                <p class="search-placeholder-msg">Ingresa un nombre o ID de usuario para iniciar la búsqueda en el nodo.</p>
+            </div>
+
+            <div class="form-actions align-right">
+                <button type="button" class="btn-hud-secondary" onclick="toggleAddFriendModal(false)">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/marco.js"></script>
+    <script src="../../js/background.js"></script>
+    <script src="js/amigos.js"></script>
+</body>
+</html>

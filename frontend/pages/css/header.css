@@ -1,0 +1,89 @@
+/* PANEL DEL DASHBOARD */
+.hud-dashboard-panel {
+    position: relative;
+    z-index: 30;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.neon-indicator {
+  color: #b522ff;
+  font-weight: bold;
+  text-shadow: 0 0 6px #b522ff;
+}
+
+.hud-missions-section .section-title {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  white-space: nowrap;
+}
+.section-title {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  white-space: nowrap;
+}
+.section-title h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.3rem;
+  color: #f3d0ff;
+  letter-spacing: 1.5px;
+}
+.hud-missions-section .section-title h2 {
+  display: inline; /* O inline-block */
+  margin: 0;       /* Quita márgenes por defecto del h2 que puedan moverlo */
+}
+.dash-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 16px;
+}
+
+.dash-header h2 {
+    font-size: 1.7rem;
+    color: var(--neon-bright);
+    font-family: 'Orbitron', sans-serif;
+    line-height: 1.2;
+    letter-spacing: 1.5px;
+    text-align: left;
+}
+
+.hud-subtext {
+    font-size: 0.85rem;
+    color: var(--neon-secondary);
+    letter-spacing: 1.5px;
+    margin-top: 6px;
+    text-align: left;
+}
+
+.btn-logout {
+    padding: 8px 16px;
+    background: rgba(180, 20, 20, 0.25);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 4px;
+    margin-top: 25px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.btn-logout:hover {
+    background: rgba(220, 38, 38, 0.85);
+    color: #ffffff;
+    box-shadow: 0 0 18px rgba(239, 68, 68, 0.6);
+    transform: translateY(-1px);
+}

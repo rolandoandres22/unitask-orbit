@@ -1,0 +1,352 @@
+/* ==========================================================================
+   ESTRUCTURA PRINCIPAL Y LAYOUT (GRUPOS HUD)
+   ========================================================================== */
+
+/* BARRA SUPERIOR CON BOTÓN CREAR GRUPO A LA DERECHA */
+.groups-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* CONTENEDOR GRID DE 2 COLUMNAS (MIS GRUPOS IZQ | SOLICITUDES DER) */
+.groups-two-columns {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr; /* Columna izquierda más ancha para Mis Grupos */
+    gap: 1.5rem;
+    align-items: start;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+
+    /* Ocultar scrollbar visual */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.groups-two-columns::-webkit-scrollbar {
+    display: none;
+}
+
+.groups-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ENCABEZADOS DE SECCIÓN */
+.sub-section-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(181, 34, 255, 0.2);
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.sub-section-title-bar h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: #d8b4fe;
+    letter-spacing: 1px;
+    padding: 4px 0;
+}
+
+/* LISTAS VERTICALES DE FILAS */
+.groups-list-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ==========================================================================
+   TARJETAS Y FILAS HORIZONTALES (REUTILIZANDO ESTILOS DE AMIGOS)
+   ========================================================================== */
+
+.group-row-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1.2rem;
+    background: rgba(10, 4, 22, 0.75);
+    border: 1px solid rgba(181, 34, 255, 0.3);
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.group-row-card:hover {
+    border-color: #b522ff;
+    background: rgba(181, 34, 255, 0.1);
+    box-shadow: 0 0 12px rgba(181, 34, 255, 0.25);
+}
+
+.group-row-card.empty-msg {
+    justify-content: center;
+    color: #94a3b8;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+}
+
+/* INFORMACIÓN DE CADA FILA (NOMBRE + SUBTEXTO) */
+.group-col-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.group-col-info .group-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    color: #f3d0ff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.group-col-info .group-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: #a78bfa;
+}
+
+/* BADGES Y BOTONES DE ACCIÓN */
+.group-col-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ==========================================================================
+   INPUTS Y BOTONES NEÓN (IDÉNTICOS A AMIGOS)
+   ========================================================================== */
+
+.hud-input-sm {
+    background: rgba(10, 4, 22, 0.8);
+    border: 1px solid rgba(181, 34, 255, 0.4);
+    color: #f3d0ff;
+    padding: 0.35rem 0.6rem 0.35rem 1.8rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 160px;
+}
+
+.hud-input-sm:focus {
+    border-color: #b522ff;
+    box-shadow: 0 0 8px rgba(181, 34, 255, 0.4);
+}
+
+.btn-hud-primary {
+    background: rgba(10, 4, 22, 0.7);
+    border: 1px solid #b522ff;
+    color: #f3d0ff;
+    padding: 0.65rem 1.25rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-hud-primary:hover {
+    background: rgba(181, 34, 255, 0.25);
+    border-color: #f3d0ff;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(181, 34, 255, 0.5);
+}
+
+.btn-hud-primary.small {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+}
+
+.btn-hud-secondary {
+    background: transparent;
+    border: 1px solid rgba(243, 208, 255, 0.3);
+    color: #f3d0ff;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-hud-secondary:hover {
+    border-color: #f3d0ff;
+    background: rgba(243, 208, 255, 0.1);
+}
+
+.btn-hud-secondary.danger {
+    border-color: rgba(248, 113, 113, 0.4);
+    color: #f87171;
+}
+
+.btn-hud-secondary.danger:hover {
+    background: rgba(248, 113, 113, 0.15);
+    border-color: #f87171;
+    box-shadow: 0 0 8px rgba(248, 113, 113, 0.4);
+}
+
+.btn-hud-secondary.danger.small {
+    padding: 0.35rem 0.65rem;
+}
+
+/* ==========================================================================
+   MODALES HUD CORREGIDOS (FUERA DEL FLUJO CON POSITION: FIXED)
+   ========================================================================== */
+
+.hud-modal-overlay {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 4, 22, 0.85);
+    backdrop-filter: blur(6px);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hud-modal-overlay.hidden {
+    display: none !important;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 500px;
+    background: rgba(15, 7, 32, 0.95);
+    border: 1px solid #b522ff;
+    box-shadow: 0 0 25px rgba(181, 34, 255, 0.4);
+    padding: 1.5rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(181, 34, 255, 0.2);
+    padding-bottom: 0.75rem;
+}
+
+.modal-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #f3d0ff;
+    font-size: 1.1rem;
+}
+
+.btn-modal-close {
+    background: transparent;
+    border: none;
+    color: #a78bfa;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0.2rem 0.5rem;
+}
+
+.btn-modal-close:hover {
+    color: #f87171;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: #d8b4fe;
+    letter-spacing: 0.5px;
+}
+
+.hud-input {
+    background: rgba(10, 4, 22, 0.85);
+    border: 1px solid rgba(181, 34, 255, 0.4);
+    color: #f3d0ff;
+    padding: 0.65rem 0.9rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    outline: none;
+    transition: all 0.25s ease;
+    border-radius: 0;
+}
+
+.hud-input::placeholder {
+    color: rgba(243, 208, 255, 0.35);
+}
+
+.hud-input:focus {
+    border-color: #b522ff;
+    box-shadow: 0 0 12px rgba(181, 34, 255, 0.5);
+    background: rgba(15, 7, 32, 0.95);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.group-header-row {
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease;
+}
+
+.accordion-icon {
+    margin-right: 8px;
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.group-members-panel {
+    background: rgba(15, 10, 25, 0.6);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-top: none;
+    margin-top: -4px;
+    margin-bottom: 12px;
+    border-radius: 0 0 6px 6px;
+    padding: 10px 15px;
+}
+
+.member-subrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.member-subrow:last-child {
+    border-bottom: none;
+}
+
+.member-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+}
+
+.member-tag {
+    color: #a855f7;
+    font-size: 0.8rem;
+}
+
+.member-role {
+    font-size: 0.8rem;
+}
+.hidden {
+    display: none !important;
+}

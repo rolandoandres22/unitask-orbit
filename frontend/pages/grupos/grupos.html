@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTask - Grupos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../../css/background.css">
+    <link rel="stylesheet" href="../amigos/css/amigos.css">
+    <link rel="stylesheet" href="css/grupos.css">
+</head>
+<body class="crt-flicker">
+
+    <!-- Auras de Energía Neón -->
+    <div class="aura-wrapper">
+        <div class="aura-blob-1"></div>
+        <div class="aura-blob-2"></div>
+    </div>
+
+    <!-- Capa de desenfoque y partículas -->
+    <div id="blurLayer" class="background-blur-layer"></div>
+    <canvas id="crackCanvas"></canvas>
+
+    <!-- Overlays de pantalla CRT -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- MARCO HUD PRINCIPAL -->
+    <div class="hud-main-container">
+
+        <!-- CONTENEDOR DEL MARCO SVG -->
+        <div id="hud-frame-container"></div>
+
+        <!-- DASHBOARD PANEL -->
+        <div class="hud-dashboard-panel">
+            <!-- HEADER -->
+            <div class="dash-header">
+                <div>
+                    <h2 class="neon-text-glow">¡HOLA, <br><span id="user-name">ESTUDIANTE</span>!</h2>
+                    <p class="hud-subtext">[ ID DE USUARIO: #<span id="user-tag">------</span> ]</p>
+                </div> 
+                <button onclick="logout()" class="btn-logout">CERRAR SESIÓN</button>
+            </div>
+
+            <!-- CUERPO PRINCIPAL (MENÚ LATERAL Y CONTENIDO) -->
+            <div class="dash-body">
+                <!-- MENÚ NAVEGACIÓN LATERAL HUD -->
+                <nav class="hud-sidebar">
+                    <ul class="hud-nav-list">
+                        <li class="hud-nav-item" onclick="location.href='../dashboard/dashboard.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">INICIO</span>
+                        </li>
+                        <li class="hud-nav-item" onclick="location.href='../tareas/tareas.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">TAREAS</span>
+                        </li>
+                        <li class="hud-nav-item" onclick="location.href='../amigos/amigos.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">AMIGOS</span>
+                        </li>
+                        <li class="hud-nav-item active" onclick="location.href='../grupos/grupos.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">GRUPOS</span>
+                        </li>
+                        <li class="hud-nav-item" onclick="location.href='../estadisticas/estadisticas.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">ESTADÍSTICAS</span>
+                        </li>
+                    </ul>
+
+                    <!-- SECCIÓN INFERIOR DEL MENÚ -->
+                    <div class="hud-nav-bottom">
+                        <ul class="hud-nav-list">
+                            <li class="hud-nav-item" onclick="location.href='../perfil/perfil.html'">
+                                <span class="nav-indicator">></span>
+                                <span class="nav-text">PERFIL</span>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- CONTENIDO PRINCIPAL: GESTIÓN DE GRUPOS -->
+                <main class="hud-main-content">
+                    
+                    <!-- ENVOLTORIO DE CABECERA FIJA (TÍTULO + BOTÓN CREAR GRUPO) -->
+                    <div class="friends-header-wrapper">
+                        <div class="friends-top-bar">
+                            <div class="section-title">
+                                <span class="neon-indicator">///</span>
+                                <h2>ADMINISTRACIÓN DE GRUPOS</h2>
+                            </div>
+                            <button class="btn-hud-primary" onclick="toggleCreateGroupModal(true)">
+                                <i class="fa-solid fa-plus"></i> CREAR GRUPO
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CONTENEDOR CON SCROLL INDEPENDIENTE (LAYOUT EN 2 COLUMNAS) -->
+                    <div class="friends-sections-container">
+                        
+                        <!-- COLUMNA IZQUIERDA: LISTA DE GRUPOS + BUSCADOR INTERNO -->
+                        <section class="friends-section friends-column">
+                            <div class="sub-section-title-bar">
+                                <div class="sub-section-title">
+                                    <span class="neon-indicator-small">></span>
+                                    <h3>LISTA DE GRUPOS</h3>
+                                </div>
+                                <!-- INPUT PARA FILTRAR LA LISTA DE GRUPOS -->
+                                <div class="friends-filter-wrapper">
+                                    <i class="fa-solid fa-magnifying-glass filter-icon"></i>
+                                    <input type="text" id="group-list-filter" class="hud-input-sm" placeholder="Filtrar grupo..." oninput="filterLocalGroups(this.value)">
+                                </div>
+                            </div>
+
+                            <div id="groups-list-container" class="friends-list-vertical">
+                                <div class="hud-card friend-card skeleton">Cargando escuadrones de trabajo...</div>
+                            </div>
+                        </section>
+
+                        <!-- COLUMNA DERECHA: SOLICITUDES DE GRUPO PENDIENTES -->
+                        <section class="friends-section requests-column">
+                            <div class="sub-section-title">
+                                <span class="neon-indicator-small">></span>
+                                <h3>SOLICITUDES PENDIENTES</h3>
+                            </div>
+                            <div id="group-requests-container" class="friends-list-vertical">
+                                <div class="hud-card friend-card skeleton">Sin invitaciones pendientes...</div>
+                            </div>
+                        </section>
+
+                    </div>
+
+                </main>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL 1: CREAR GRUPO -->
+    <div id="create-group-modal" class="hud-modal-overlay hidden">
+        <div class="hud-card modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Crear Nuevo Grupo</h2>
+                <button class="btn-modal-close" onclick="toggleCreateGroupModal(false)">✕</button>
+            </div>
+            
+            <form id="create-group-form" onsubmit="handleCreateGroup(event)">
+                <div class="form-group">
+                    <label for="group-name-input">Nombre del Grupo *</label>
+                    <input type="text" id="group-name-input" class="hud-input" placeholder="Ej: Proyecto Final Informática" required>
+                </div>
+                <div class="form-group">
+                    <label for="group-desc-input">Descripción (Opcional)</label>
+                    <textarea id="group-desc-input" class="hud-input" rows="3" placeholder="Objetivos o temáticas del escuadrón..."></textarea>
+                </div>
+                <div class="form-actions align-right modal-footer">
+                    <button type="button" class="btn-hud-secondary" onclick="toggleCreateGroupModal(false)">Cancelar</button>
+                    <button type="submit" class="btn-hud-primary">Crear Grupo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: INVITAR AMIGOS AL GRUPO -->
+    <div id="invite-friend-modal" class="hud-modal-overlay hidden">
+        <div class="hud-card modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Invitar Amigos al Grupo</h2>
+                <button class="btn-modal-close" onclick="toggleInviteModal(false)">✕</button>
+            </div>
+            
+            <p class="search-placeholder-msg">Seleccioná a un aliado de tu lista de amigos para enviarle una invitación:</p>
+
+            <div id="friends-to-invite-container" class="search-results-list">
+                <!-- Se cargan dinámicamente solo las personas de la tabla amigos -->
+            </div>
+
+            <div class="form-actions align-right modal-footer">
+                <button type="button" class="btn-hud-secondary" onclick="toggleInviteModal(false)">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/marco.js"></script>
+    <script src="../../js/background.js"></script>
+    <script src="js/grupos.js"></script>
+    <script src="../js/header.js"></script> 
+    <script src="./js/grupos.js"></script>
+</body>
+</html>

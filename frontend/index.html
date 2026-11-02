@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTask - Login - Registro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/background.css">
+    <link rel="stylesheet" href="css/panel.css">
+</head>
+<body class="crt-flicker">
+
+    <!-- Auras de Energía Neón -->
+    <div class="aura-wrapper">
+        <div class="aura-blob-1"></div>
+        <div class="aura-blob-2"></div>
+    </div>
+
+    <!-- Capa de desenfoque y partículas -->
+    <div id="blurLayer" class="background-blur-layer"></div>
+    <canvas id="crackCanvas"></canvas>
+
+    <!-- Overlays de pantalla CRT -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- MARCO HUD PRINCIPAL -->
+    <div class="hud-main-container">
+
+        <!-- FORMULARIO AUTENTICACIÓN -->
+        <div id="auth-panel" class="hud-form-panel">
+            <div class="hud-title-box">
+                <h1 class="neon-text-glow">UNITASK - ORBIT</h1>
+                <p class="hud-subtext">AUTENTICACIÓN - REGISTRO</p>
+            </div>
+
+            <div class="hud-tabs">
+                <button id="tab-login" class="hud-tab active" onclick="switchAuthMode('login')">
+                    > ACCESO
+                </button>
+                <button id="tab-register" class="hud-tab" onclick="switchAuthMode('register')">
+                    > REGISTRO
+                </button>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <div id="group-nombre" class="hud-field-group hidden">
+                    <label>> NOMBRE COMPLETO:</label>
+                    <input type="text" id="nombre" class="hud-input" placeholder="Ej. Juan Pérez">
+                </div>
+
+                <div class="hud-field-group">
+                    <label>> CORREO ELECTRÓNICO:</label>
+                    <input type="email" id="email" required class="hud-input" placeholder="estudiante@siglo21.edu.ar">
+                </div>
+
+                <div class="hud-field-group">
+                    <label>> CONTRASEÑA:</label>
+                    <input type="password" id="password" required class="hud-input" placeholder="••••••••">
+                </div>
+
+                <div id="group-repeat-password" class="hud-field-group hidden">
+                    <label>> REPETIR CONTRASEÑA:</label>
+                    <input type="password" id="repeat-password" class="hud-input" placeholder="••••••••">
+                </div>
+
+                <button type="submit" id="btn-submit" class="hud-btn">
+                    INICIAR SESIÓN
+                </button>
+            </form>
+
+            <div id="auth-message" class="hud-status-msg"></div>
+        </div>
+
+        <!-- DASHBOARD POST-LOGIN -->
+        <div id="dashboard-section" class="hud-dashboard-panel hidden">
+            <div class="dash-header">
+                <div>
+                    <h2 class="neon-text-glow">¡HOLA, <span id="user-name">ESTUDIANTE</span>!</h2>
+                    <p class="hud-subtext">[ SESIÓN INICIADA // NODO ACTIVO ]</p>
+                </div>
+                <button onclick="logout()" class="btn-logout">CERRAR SESIÓN</button>
+            </div>
+            <p class="dash-text"></p>
+        </div>
+
+    </div>
+
+    <script src="js/background.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

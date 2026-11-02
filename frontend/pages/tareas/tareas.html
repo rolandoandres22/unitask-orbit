@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTask - Gestión de Tareas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../../css/background.css">
+    <link rel="stylesheet" href="css/tareas.css">
+</head>
+<body class="crt-flicker">
+
+    <!-- Auras de Energía Neón -->
+    <div class="aura-wrapper">
+        <div class="aura-blob-1"></div>
+        <div class="aura-blob-2"></div>
+    </div>
+
+    <!-- Capa de desenfoque y partículas -->
+    <div id="blurLayer" class="background-blur-layer"></div>
+    <canvas id="crackCanvas"></canvas>
+
+    <!-- Overlays de pantalla CRT -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- MARCO HUD PRINCIPAL -->
+    <div class="hud-main-container">
+
+        <!-- CONTENEDOR DEL MARCO SVG -->
+        <div id="hud-frame-container"></div>
+
+        <!-- DASHBOARD PANEL -->
+        <div class="hud-dashboard-panel">
+            <!-- HEADER -->
+            <div class="dash-header">
+                <div>
+                    <h2 class="neon-text-glow">¡HOLA, <br><span id="user-name">ESTUDIANTE</span>!</h2>
+                    <p class="hud-subtext">[ ID DE USUARIO: #<span id="user-tag">------</span> ]</p>
+                </div> 
+                <button onclick="logout()" class="btn-logout">CERRAR SESIÓN</button>
+            </div>
+
+            <!-- CUERPO PRINCIPAL -->
+            <div class="dash-body">
+                <!-- MENÚ NAVEGACIÓN LATERAL HUD -->
+                <nav class="hud-sidebar">
+                    <ul class="hud-nav-list">
+                        <li class="hud-nav-item" onclick="location.href='../dashboard/dashboard.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">INICIO</span>
+                        </li>
+                        <li class="hud-nav-item active" onclick="location.href='../tareas/tareas.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">TAREAS</span>
+                        </li>
+                        <li class="hud-nav-item" onclick="location.href='../amigos/amigos.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">AMIGOS</span>
+                        </li>
+                        <li class="hud-nav-item" onclick="location.href='../grupos/grupos.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">GRUPOS</span>
+                        </li>
+                        <li class="hud-nav-item" onclick="location.href='../estadisticas/estadisticas.html'">
+                            <span class="nav-indicator">></span>
+                            <span class="nav-text">ESTADÍSTICAS</span>
+                        </li>
+                    </ul>
+
+                    <div class="hud-nav-bottom">
+                        <ul class="hud-nav-list">
+                            <li class="hud-nav-item" onclick="location.href='../perfil/perfil.html'">
+                                <span class="nav-indicator">></span>
+                                <span class="nav-text">PERFIL</span>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- CONTENIDO PRINCIPAL: GESTIÓN DE TAREAS -->
+                <main class="hud-main-content">
+                    
+                    <!-- ENVOLTORIO DE CABECERA FIJA (TÍTULO + FILTROS) -->
+                    <div class="tasks-header-wrapper">
+                        <!-- BARRA SUPERIOR: TÍTULO Y BOTÓN DE NUEVA TAREA -->
+                        <div class="tasks-top-bar">
+                            <div class="section-title">
+                                <span class="neon-indicator">///</span>
+                                <h2>REGISTRO DE TAREAS</h2>
+                            </div>
+                            <button class="btn-hud-primary" onclick="toggleTaskModal(true)"><i class="fa-solid fa-plus"> </i>  NUEVA TAREA</button>
+                        </div>
+
+                        <!-- BARRA DE FILTROS COMPLETA -->
+                        <div class="task-filters-container">
+                            <span class="filter-label">FILTRAR POR:</span>
+                            <div class="task-filters">
+                                <button class="btn-filter" onclick="filterTasks('TODAS', this)">TODAS</button>
+                                <button class="btn-filter active" onclick="filterTasks('PENDIENTE', this)">PENDIENTES</button>
+                                <button class="btn-filter" onclick="filterTasks('COMPLETADA', this)">COMPLETADAS</button>
+                                <button class="btn-filter" onclick="filterTasks('CANCELADA', this)">CANCELADAS</button>
+                                <button class="btn-filter" onclick="filterTasks('INDIVIDUAL', this)">INDIVIDUALES</button>
+                                <button class="btn-filter" onclick="filterTasks('GRUPAL', this)">GRUPALES</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LISTADO DINÁMICO DE TAREAS CON SCROLL INDEPENDIENTE -->
+                    <div id="tasks-list-container" class="missions-grid">
+                        <div class="hud-card mission-card skeleton">Cargando misiones del sistema...</div>
+                    </div>
+
+                </main>
+            </div>
+        </div>
+
+    </div>
+
+<!-- MODAL CREAR NUEVA TAREA -->
+<div id="task-modal" class="hud-modal-overlay hidden">
+    <div class="hud-card modal-content">
+        <div class="modal-header">
+            <span class="hud-badge">[ SISTEMA ]</span>
+            <h2 class="modal-title">Crear nueva tarea</h2>
+            <button class="btn-modal-close" onclick="toggleTaskModal(false)">✕</button>
+        </div>
+        
+        <form id="create-task-form" onsubmit="handleCreateTask(event)">
+            <div class="form-grid">
+                <!-- Título -->
+                <div class="form-group span-2">
+                    <label for="task-title">Título de la tarea *</label>
+                    <input type="text" id="task-title" class="hud-input" placeholder="Avance de Seminario Final" required maxlength="150">
+                </div>
+
+                <!-- Descripción -->
+                <div class="form-group span-2">
+                    <label for="task-desc">Descripción (opcional)</label>
+                    <textarea id="task-desc" class="hud-input hud-textarea" placeholder="Ej. Subir el primer borrador con las correcciones del profesor..." rows="3"></textarea>
+                </div>
+
+                <!-- Fecha y Hora de Inicio -->
+                <div class="form-group">
+                    <label for="task-start-date">Fecha y hora de inicio *</label>
+                    <input type="datetime-local" id="task-start-date" class="hud-input" required>
+                </div>
+
+                <!-- Fecha y Hora Límite -->
+                <div class="form-group">
+                    <label for="task-deadline">Fecha y hora límite *</label>
+                    <input type="datetime-local" id="task-deadline" class="hud-input" required>
+                </div>
+
+                <!-- Prioridad -->
+                <div class="form-group">
+                    <label for="task-priority">Prioridad</label>
+                    <select id="task-priority" class="hud-input hud-select" required>
+                        <option value="ALTA">Alta (40 XP)</option>
+                        <option value="MEDIA" selected>Media (25 XP)</option>
+                        <option value="BAJA">Baja (10 XP)</option>
+                    </select>
+                </div>
+
+                <!-- Tipo de Tarea -->
+                <div class="form-group">
+                    <label>Tipo de tarea *</label>
+                    <div class="type-toggle-group">
+                        <button type="button" id="btn-type-individual" class="btn-toggle active" onclick="setTaskType('INDIVIDUAL')">Individual</button>
+                        <button type="button" id="btn-type-grupal" class="btn-toggle" onclick="setTaskType('GRUPAL')">Grupal</button>
+                    </div>
+                </div>
+
+                <!-- Grupo de Estudio (Solo Grupal) -->
+                <div class="form-group">
+                    <label for="task-group-select">Grupo de estudio (Solo Líder) *</label>
+                    <select id="task-group-select" class="hud-input hud-select" disabled onchange="handleGroupChange(this.value)">
+                        <option value="">No aplica (Tarea individual)</option>
+                    </select>
+                </div>
+
+                <!-- Asignar a (Solo Grupal) -->
+                <div class="form-group span-2">
+                    <label for="task-group-assign">Asignar a *</label>
+                    <select id="task-group-assign" class="hud-input hud-select" disabled>
+                        <option value="">No aplica (Tarea individual)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-hud-secondary" onclick="toggleTaskModal(false)">Cancelar</button>
+                <button type="submit" id="btn-create-task" class="btn-hud-primary">Guardar Tarea</button>
+                <span id="task-form-msg" class="form-msg"></span>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <script src="../../js/marco.js"></script>
+    <script src="../../js/background.js"></script>
+    <script src="js/tareas.js"></script>
+</body>
+</html>

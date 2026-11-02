@@ -1,0 +1,230 @@
+:root {
+    --neon-primary: #b522ff;
+    --neon-secondary: #d968ff;
+    --neon-bright: #f3d0ff;
+    --neon-deep: #5b0099;
+    --bg-dark: #030006;
+    --bg-blur-amount: 10px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-dark);
+    overflow: hidden;
+    font-family: 'Share Tech Mono', 'Orbitron', monospace;
+    font-size: 15px;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+/* EFECTOS Y AURAS DE FONDO */
+.aura-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+@keyframes morphAura {
+    0% { transform: translate(-10%, -10%) scale(0.9) rotate(0deg); opacity: 0.35; }
+    33% { transform: translate(10%, 5%) scale(1.15) rotate(120deg); opacity: 0.6; }
+    66% { transform: translate(-5%, 12%) scale(0.95) rotate(240deg); opacity: 0.4; }
+    100% { transform: translate(-10%, -10%) scale(0.9) rotate(360deg); opacity: 0.35; }
+}
+
+@keyframes morphAuraSecondary {
+    0% { transform: translate(15%, 10%) scale(1.1) rotate(0deg); opacity: 0.3; }
+    50% { transform: translate(-12%, -8%) scale(0.85) rotate(180deg); opacity: 0.55; }
+    100% { transform: translate(15%, 10%) scale(1.1) rotate(360deg); opacity: 0.3; }
+}
+
+.aura-blob-1 {
+    position: absolute;
+    width: 70vw;
+    height: 70vh;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    background: radial-gradient(circle, rgba(181, 34, 255, 0.45) 0%, rgba(130, 0, 255, 0.2) 50%, transparent 75%);
+    animation: morphAura 12s ease-in-out infinite;
+    filter: blur(40px);
+}
+
+.aura-blob-2 {
+    position: absolute;
+    width: 60vw;
+    height: 60vh;
+    border-radius: 60% 40% 30% 70% / 50% 30% 70% 40%;
+    background: radial-gradient(circle, rgba(217, 104, 255, 0.4) 0%, rgba(91, 0, 153, 0.15) 55%, transparent 80%);
+    animation: morphAuraSecondary 16s ease-in-out infinite;
+    filter: blur(50px);
+}
+
+.background-blur-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    backdrop-filter: blur(var(--bg-blur-amount)) brightness(0.85);
+    -webkit-backdrop-filter: blur(var(--bg-blur-amount)) brightness(0.85);
+    pointer-events: none;
+}
+
+#crackCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+.vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: radial-gradient(circle at center, transparent 35%, rgba(3, 0, 6, 0.96) 85%);
+    pointer-events: none;
+}
+
+.crt-flicker {
+    animation: flicker 0.15s infinite alternate;
+}
+
+@keyframes flicker {
+    0% { opacity: 0.97; }
+    100% { opacity: 1; }
+}
+
+.neon-glow-filter {
+    filter: drop-shadow(0 0 3px var(--neon-bright))
+            drop-shadow(0 0 8px var(--neon-primary))
+            drop-shadow(0 0 18px var(--neon-deep));
+}
+
+.neon-text-glow {
+    text-shadow: 0 0 4px var(--neon-bright),
+                 0 0 10px var(--neon-primary),
+                 0 0 20px var(--neon-deep);
+}
+
+/* MARCO Y PANELES */
+.hud-main-container {
+    position: relative;
+    z-index: 20;
+    width: 96vw;
+    height: 92vh;
+    max-width: 1920px;
+    max-height: 1080px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 100px; 
+    
+}
+
+.hud-svg-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+}
+
+
+
+/* LOADER CONFIGURACIÓN */
+.hud-loader {
+    position: absolute;
+    top: -2.5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 25;
+    pointer-events: none;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hud-loader::before {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #03010a 40%, rgba(3, 1, 10, 0.85) 60%, transparent 80%);
+    z-index: 0;
+}
+
+.loader {
+    --color-one: #b522ff;
+    --color-two: #5b0099;
+    --color-three: #b522ff80;
+    --color-four: #5b009980;
+    --color-five: #b522ff40;
+    --time-animation: 2s;
+    --size: 1;
+    position: relative;
+    border-radius: 50%;
+    transform: scale(var(--size));
+    box-shadow: 0 0 25px 0 var(--color-three), 0 20px 50px 0 var(--color-four);
+    animation: colorize calc(var(--time-animation) * 3) ease-in-out infinite;
+}
+
+.loader::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border-top: solid 1px var(--color-one);
+    border-bottom: solid 1px var(--color-two);
+    background: linear-gradient(180deg, var(--color-five), var(--color-four));
+    box-shadow: inset 0 10px 10px 0 var(--color-three), inset 0 -10px 10px 0 var(--color-four);
+}
+
+.loader .box {
+    width: 100px; height: 100px;
+    background: linear-gradient(180deg, var(--color-one) 30%, var(--color-two) 70%);
+    mask: url(#clipping);
+    -webkit-mask: url(#clipping);
+}
+
+.loader svg { position: absolute; }
+.loader svg #clipping { filter: contrast(15); animation: roundness calc(var(--time-animation) / 2) linear infinite; }
+.loader svg #clipping polygon { filter: blur(7px); }
+.loader svg #clipping polygon:nth-child(1) { transform-origin: 75% 25%; transform: rotate(90deg); }
+.loader svg #clipping polygon:nth-child(2) { transform-origin: 50% 50%; animation: rotation var(--time-animation) linear infinite reverse; }
+.loader svg #clipping polygon:nth-child(3) { transform-origin: 50% 60%; animation: rotation var(--time-animation) linear infinite; animation-delay: calc(var(--time-animation) / -3); }
+.loader svg #clipping polygon:nth-child(4) { transform-origin: 40% 40%; animation: rotation var(--time-animation) linear infinite reverse; }
+.loader svg #clipping polygon:nth-child(5) { transform-origin: 40% 40%; animation: rotation var(--time-animation) linear infinite reverse; animation-delay: calc(var(--time-animation) / -2); }
+.loader svg #clipping polygon:nth-child(6) { transform-origin: 60% 40%; animation: rotation var(--time-animation) linear infinite; }
+.loader svg #clipping polygon:nth-child(7) { transform-origin: 60% 40%; animation: rotation var(--time-animation) linear infinite; animation-delay: calc(var(--time-animation) / -1.5); }
+
+@keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes roundness { 0%, 10% { filter: contrast(15); } }
+@keyframes colorize { 0%, 100% { filter: hue-rotate(0deg); } 50% { filter: hue-rotate(8deg); } }

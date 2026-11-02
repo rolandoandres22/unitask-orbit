@@ -1,0 +1,456 @@
+/* ESTRUCTURA PRINCIPAL DE CONTENIDO */
+.hud-main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.friends-header-wrapper {
+    flex-shrink: 0;
+    margin-bottom: 1.5rem;
+}
+
+.friends-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* LAYOUT DE 2 COLUMNAS (LISTA AMIGOS A LA IZQ | SOLICITUDES A LA DER) */
+.friends-sections-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    display: grid;
+    grid-template-columns: 1.7fr 1fr; /* Columna izquierda más ancha (Amigos), derecha más angosta (Solicitudes) */
+    gap: 1.5rem;
+    align-items: start;
+
+    /* Ocultar scrollbar visual */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.friends-sections-container::-webkit-scrollbar {
+    display: none;
+}
+
+.friends-section {
+    margin-bottom: 2rem;
+}
+
+.sub-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(181, 34, 255, 0.2);
+    padding-bottom: 0.4rem;
+}
+
+.sub-section-title h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: #d8b4fe;
+    letter-spacing: 1px;
+    padding: 4px;
+}
+
+/* CABECERA DE SECCIÓN CON FILTRO INTERNO */
+.sub-section-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(181, 34, 255, 0.2);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.sub-section-title-bar .sub-section-title {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* INPUT DE FILTRADO INTERNO DE AMIGOS */
+.friends-filter-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.friends-filter-wrapper .filter-icon {
+    position: absolute;
+    left: 0.6rem;
+    color: #a78bfa;
+    font-size: 0.75rem;
+}
+
+.hud-input-sm {
+    background: rgba(10, 4, 22, 0.8);
+    border: 1px solid rgba(181, 34, 255, 0.4);
+    color: #f3d0ff;
+    padding: 0.35rem 0.6rem 0.35rem 1.8rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 160px;
+}
+
+.hud-input-sm:focus {
+    border-color: #b522ff;
+    box-shadow: 0 0 8px rgba(181, 34, 255, 0.4);
+}
+
+/* LISTA VERTICAL DE SOLICITUDES (COLUMNA IZQUIERDA) */
+.friends-list-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* GRID DE TARJETAS DE AMIGOS (COLUMNA DERECHA) */
+.friends-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    align-content: start;
+    align-items: start;
+}
+
+.friend-card {
+    height: fit-content;
+}
+
+/* INPUT Y RESULTADOS DE BÚSQUEDA DEL MODAL */
+.search-input-wrapper {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.search-results-list {
+    margin-top: 1.5rem;
+    max-height: 250px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.search-placeholder-msg {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+/* ESTILOS DEL BOTÓN HUD NEÓN */
+.btn-hud-primary {
+    background: rgba(10, 4, 22, 0.7);
+    border: 1px solid #b522ff;
+    color: #f3d0ff;
+    padding: 0.65rem 1.25rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-hud-primary:hover {
+    background: rgba(181, 34, 255, 0.25);
+    border-color: #f3d0ff;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(181, 34, 255, 0.5);
+}
+
+.btn-hud-secondary {
+    background: transparent;
+    border: 1px solid rgba(243, 208, 255, 0.3);
+    color: #f3d0ff;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-hud-secondary:hover {
+    border-color: #f3d0ff;
+    background: rgba(243, 208, 255, 0.1);
+}
+
+/* POSICIONAMIENTO DEL OVERLAY DEL MODAL FUERA DEL FLUJO */
+.hud-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 4, 22, 0.85);
+    backdrop-filter: blur(6px);
+    z-index: 9999; /* Asegura quedar por encima de la interfaz */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hud-modal-overlay.hidden {
+    display: none !important;
+}
+
+/* MODAL CONTENT STYLING */
+.modal-content {
+    width: 90%;
+    max-width: 500px;
+    background: rgba(15, 7, 32, 0.95);
+    border: 1px solid #b522ff;
+    box-shadow: 0 0 25px rgba(181, 34, 255, 0.4);
+    padding: 1.5rem;
+}
+
+
+
+/* ==========================================================================
+   ESTILOS INTERNOS DEL MODAL HUD & INPUTS
+   ========================================================================== */
+
+/* Header del modal y botón de cierre */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(181, 34, 255, 0.2);
+    padding-bottom: 0.75rem;
+}
+
+.modal-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #f3d0ff;
+    font-size: 1.2rem;
+    margin-top: 0.25rem;
+}
+
+.btn-modal-close {
+    background: transparent;
+    border: none;
+    color: #a78bfa;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0.2rem 0.5rem;
+}
+
+.btn-modal-close:hover {
+    color: #f87171;
+}
+
+.hud-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: #a78bfa;
+}
+
+/* Campos de formulario y etiquetas */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: #d8b4fe;
+    letter-spacing: 0.5px;
+}
+
+/* ESTILO HUD PARA LOS INPUTS (Fondo oscuro, texto claro y borde neón) */
+.hud-input {
+    background: rgba(10, 4, 22, 0.85);
+    border: 1px solid rgba(181, 34, 255, 0.4);
+    color: #f3d0ff;
+    padding: 0.65rem 0.9rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    outline: none;
+    transition: all 0.25s ease;
+    border-radius: 0;
+}
+
+.hud-input::placeholder {
+    color: rgba(243, 208, 255, 0.35);
+}
+
+.hud-input:focus {
+    border-color: #b522ff;
+    box-shadow: 0 0 12px rgba(181, 34, 255, 0.5);
+    background: rgba(15, 7, 32, 0.95);
+}
+/* LISTA DE AMIGOS EN FORMADO FILA / TABLA */
+#friends-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* FILA INDIVIDUAL DE AMIGO */
+.friend-row-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1.2rem;
+    background: rgba(10, 4, 22, 0.75);
+    border: 1px solid rgba(181, 34, 255, 0.3);
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.friend-row-card:hover {
+    border-color: #b522ff;
+    background: rgba(181, 34, 255, 0.1);
+    box-shadow: 0 0 12px rgba(181, 34, 255, 0.25);
+}
+
+.friend-row-card.empty-msg {
+    justify-content: center;
+    color: #94a3b8;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+}
+
+/* COLUMNA 1: NOMBRE + #TAG DE USUARIO */
+.friend-col-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.friend-col-info .friend-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    color: #f3d0ff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.friend-col-info .friend-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    color: #a78bfa;
+}
+
+/* COLUMNA 2: BADGE DE RANGO (D, C, B, A, S...) */
+.friend-rank-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: #72f4cd; /* Tono neón rosa / magenta para el Rango */
+    background: rgba(114, 244, 233, 0.1);
+    border: 1px solid rgba(114, 244, 227, 0.3);
+    padding: 0.2rem 0.6rem;
+    letter-spacing: 1px;
+}
+
+/* COLUMNA 3: BOTÓN ELIMINAR */
+.friend-col-actions {
+    display: flex;
+    align-items: center;
+}
+
+.btn-hud-secondary.danger {
+    border-color: rgba(248, 113, 113, 0.4);
+    color: #f87171;
+}
+
+.btn-hud-secondary.danger:hover {
+    background: rgba(248, 113, 113, 0.15);
+    border-color: #f87171;
+    box-shadow: 0 0 8px rgba(248, 113, 113, 0.4);
+}
+/* CONTENEDOR DE SOLICITUDES EN FORMATO FILA */
+.friends-list-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* FILA DE SOLICITUD PENDIENTE */
+.friend-row-card.request-row {
+    padding: 0.75rem 1rem;
+}
+
+/* ACCIONES DE SOLICITUDES (BOTONES ACEPTAR / RECHAZAR COMPACTOS) */
+.request-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.request-actions .btn-hud-primary.small {
+    padding: 0.35rem 0.65rem;
+    background: rgba(74, 222, 128, 0.15);
+    border-color: #4ade80;
+    color: #4ade80;
+}
+
+.request-actions .btn-hud-primary.small:hover {
+    background: rgba(74, 222, 128, 0.3);
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+    color: #ffffff;
+}
+
+.request-actions .btn-hud-secondary.danger.small {
+    padding: 0.35rem 0.65rem;
+}
+
+/* CONTENEDOR DE RESULTADOS EN MODAL */
+#search-results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 0.4rem;
+}
+
+/* FILA DE RESULTADO DE BÚSQUEDA */
+.friend-row-card.search-row {
+    padding: 0.75rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10, 4, 22, 0.85);
+    border: 1px solid rgba(181, 34, 255, 0.25);
+}
+
+.friend-row-card.search-row:hover {
+    border-color: #b522ff;
+    background: rgba(181, 34, 255, 0.12);
+}
+
+/* BADGES DE ESTADO (YA ES AMIGO O SOLICITUD PENDIENTE) */
+.badge-status-ok {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    padding: 0.3rem 1.06rem;
+    letter-spacing: 0.5px;
+}
+
+.badge-status-pending {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: #facc15;
+    background: rgba(250, 204, 21, 0.1);
+    border: 1px solid rgba(250, 204, 21, 0.3);
+    padding: 0.3rem 0.6rem;
+    letter-spacing: 0.5px;
+}
