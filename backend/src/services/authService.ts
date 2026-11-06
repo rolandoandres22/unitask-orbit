@@ -1,4 +1,4 @@
-import { supabase, supabaseAdmin } from '../config/db';
+import { supabase, supabaseAdmin } from '../config/db.js';
 
 export const registerUser = async (email: string, password: string, nombre_completo: string) => {
   // 1. Crear el usuario en Supabase Auth

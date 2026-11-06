@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/db';
+import { supabaseAdmin } from '../config/db.js';
 
 export const getUserProfile = async (userId: string) => {
   return await supabaseAdmin

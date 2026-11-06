@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/db';
+import { supabaseAdmin } from '../config/db.js';
 
 export const getGroupMembers = async (id_grupo: string) => {
   const { data, error } = await supabaseAdmin
