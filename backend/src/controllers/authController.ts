@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import * as authService from '../services/authService';
-import { supabaseAdmin } from '../config/db';
+import * as authService from '../services/authService.js';
+import { supabaseAdmin } from '../config/db.js';
 
 export const register = async (req: Request, res: Response) => {
   const { email, password, nombre_completo } = req.body;

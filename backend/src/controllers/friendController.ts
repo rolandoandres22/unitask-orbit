@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../middlewares/authMiddleware';
-import * as friendService from '../services/friendService';
+import { AuthenticatedRequest } from '../middlewares/authMiddleware.js';
+import * as friendService from '../services/friendService.js';
 
 export const getFriends = async (req: AuthenticatedRequest, res: Response) => {
   try {

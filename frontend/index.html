@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniTask - Login - Registro</title>
+    <!-- Importo Fuentes de Google e Iconos de FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- importo CSS del background y panel de login - registro -->
     <link rel="stylesheet" href="css/background.css">
     <link rel="stylesheet" href="css/panel.css">
 </head>
@@ -73,20 +75,8 @@
             <div id="auth-message" class="hud-status-msg"></div>
         </div>
 
-        <!-- DASHBOARD POST-LOGIN -->
-        <div id="dashboard-section" class="hud-dashboard-panel hidden">
-            <div class="dash-header">
-                <div>
-                    <h2 class="neon-text-glow">¡HOLA, <span id="user-name">ESTUDIANTE</span>!</h2>
-                    <p class="hud-subtext">[ SESIÓN INICIADA // NODO ACTIVO ]</p>
-                </div>
-                <button onclick="logout()" class="btn-logout">CERRAR SESIÓN</button>
-            </div>
-            <p class="dash-text"></p>
-        </div>
-
     </div>
-
+    <!-- importo los scripts de js del background(fondo) y del login -->
     <script src="js/background.js"></script>
     <script src="js/login.js"></script>
 </body>

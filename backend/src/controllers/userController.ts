@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { supabaseAdmin } from '../config/db';
+import { supabaseAdmin } from '../config/db.js';
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
@@ -148,6 +148,72 @@ export const getProfile = async (req: Request, res: Response) => {
       misiones_prioritarias: misionesPrioritarias
     });
 
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user?.id || (req as any).user?.id_usuario;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Usuario no autenticado' });
+    }
+
+    const { nombre_completo } = req.body;
+
+    if (!nombre_completo || nombre_completo.trim() === '') {
+      return res.status(400).json({ error: 'El nombre completo es obligatorio' });
+    }
+
+    // Actualizar nombre completo en la tabla usuarios
+    const { data: usuarioActualizado, error } = await supabaseAdmin
+      .from('usuarios')
+      .update({ nombre_completo: nombre_completo.trim() })
+      .eq('id_usuario', userId)
+      .select('id_usuario, nombre_completo, email, user_tag, xp_acumulado')
+      .single();
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    return res.status(200).json({
+      message: 'Perfil actualizado exitosamente',
+      usuario: usuarioActualizado
+    });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const updatePassword = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user?.id || (req as any).user?.id_usuario;
+    const { nueva_password } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Usuario no autenticado' });
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#\-_])[A-Za-z\d@$!%*?&.#\-_]{8,}$/;
+    if (!nueva_password || !passwordRegex.test(nueva_password)) {
+      return res.status(400).json({ 
+        error: 'La contraseña debe tener al menos 8 caracteres, mayúscula, minúscula, número y un carácter especial' 
+      });
+    }
+
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(
+      userId,
+      { password: nueva_password }
+    );
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    return res.status(200).json({ message: 'Contraseña actualizada correctamente' });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniTask - Inicio</title>
+    <!-- Importo Fuentes de Google e Iconos de FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/menu.css">
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="../../css/background.css">
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Importación de CSS -->
+    <link rel="stylesheet" href="../css/header.css"><!-- Estilos del header -->
+    <link rel="stylesheet" href="../css/menu.css"><!-- Menú lateral -->
+    <link rel="stylesheet" href="css/dashboard.css"><!-- Estilos personalizados del Dashboard -->
+    <link rel="stylesheet" href="../../css/background.css"><!-- Fondo de partículas -->
+    <link rel="stylesheet" href="../../css/ruleta.css"><!-- Ruleta de consejos -->
 <body class="crt-flicker">
 
     <!-- Auras de Energía Neón -->
@@ -38,7 +41,7 @@
             <!-- HEADER -->
             <div class="dash-header">
                 <div>
-                    <h2 class="neon-text-glow">¡HOLA, <br><span id="user-name">ESTUDIANTE</span>!</h2>
+                    <h2 class="neon-text-glow">BIENVENIDO, <br><span id="user-name">ESTUDIANTE</span>!</h2>
                     <p class="hud-subtext">[ ID DE USUARIO: #<span id="user-tag">------</span> ]</p>
                 </div> 
                 <button onclick="logout()" class="btn-logout">CERRAR SESIÓN</button>
@@ -46,7 +49,7 @@
 
             <!-- CUERPO PRINCIPAL (MENÚ LATERAL Y CONTENIDO) -->
             <div class="dash-body">
-                <!-- MENÚ NAVEGACIÓN LATERAL HUD -->
+                <!-- MENÚ NAVEGACIÓN LATERAL -->
                 <nav class="hud-sidebar">
                     <ul class="hud-nav-list">
                         <li class="hud-nav-item active" onclick="location.href='../dashboard/dashboard.html'">
@@ -133,7 +136,7 @@
                         <div class="hud-missions-section">
                             <div class="section-title">
                                 <span class="neon-indicator">///</span>
-                                <h2>MISIONES PRIORITARIAS DEL DÍA</h2>
+                                <h2>TAREAS PRIORITARIAS DEL DÍA</h2>
                             </div>
 
                             <div id="missions-container" class="missions-grid">
@@ -148,8 +151,9 @@
         </div>
 
     </div>
-    <script src="../../js/background.js"></script>
-    <script src="../../js/marco.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script src="../../js/background.js"></script><!-- JS del fondo -->
+    <script src="../../js/marco.js"></script><!-- Marco estilo consola gamer -->
+    <script src="js/dashboard.js"></script><!-- js de las peticiones para traer los datos del back -->
+    <script src="../../js/ruleta.js"></script><!-- js de la ruleta la cual trae consejo aleatorio y inyecta html del modal -->
 </body>
 </html>

@@ -1,8 +1,4 @@
-
-
-/* ==========================================
-   MÓDULO INICIO - CENTRO DE COMANDO HUD
-   ========================================== */
+/* Contenedor general de la vista Inicio */
 .hud-tab-view {
   display: flex;
   flex-direction: column;
@@ -10,23 +6,25 @@
   animation: fadeInHud 0.3s ease-in-out;
 }
 
-/* GRID SUPERIOR */
+/* GRID SUPERIOR: FICHA DE ESTATUS + RESUMEN RÁPIDO */
+/* Layout principal en 2 columnas desiguales */
 .hud-stats-grid {
   display: grid;
   grid-template-columns: 1.8fr 1fr;
   gap: 20px;
 }
 
+/* Estilo base de tarjeta Sci-Fi con fondo semi-transparente y borde neón */
 .hud-card {
   background: rgba(15, 5, 29, 0.65);
   border: 1px solid rgba(181, 34, 255, 0.3);
   padding: 20px;
-  /* clip-path: polygon(0 0, 96% 0, 100% 8%, 100% 100%, 4% 100%, 0 92%); */
   backdrop-filter: blur(0.5px);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   position: relative;
 }
 
+/* Header de la tarjeta de Estatus */
 .status-card .card-header {
   display: flex;
   justify-content: space-between;
@@ -34,15 +32,15 @@
   margin-bottom: 15px;
 }
 
+/* Etiqueta de sistema */
 .hud-badge {
-  /* font-family: 'Share Tech Mono', monospace; */
-    font-family: 'Orbitron', monospace;
-
+  font-family: 'Orbitron', monospace;
   font-size: 0.75rem;
   color: #a855f7;
   letter-spacing: 1px;
 }
 
+/* Distinctivo del Rango */
 .rank-badge {
   background: linear-gradient(135deg, #b522ff 0%, #6b00b3 100%);
   color: #ffffff;
@@ -55,15 +53,8 @@
   clip-path: polygon(0 0, 90% 0, 100% 30%, 100% 100%, 10% 100%, 0 70%);
 }
 
-.rank-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 1.4rem;
-  color: #f3d0ff;
-  text-shadow: 0 0 8px #b522ff;
-  margin-bottom: 25px;
-}
 
-/* BARRA DE PROGRESSO DE XP */
+/* BARRA DE PROGRESO DE XP DINÁMICA */
 .xp-bar-container {
   display: flex;
   flex-direction: column;
@@ -78,6 +69,7 @@
   color: #d8b4fe;
 }
 
+/* Relleno y contenedor de la barra de energía */
 .xp-progress-bg {
   width: 100%;
   height: 14px;
@@ -94,45 +86,56 @@
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* QUICK STATS */
+/* TARJETAS DE RESUMEN RÁPIDO (ALINEACIÓN HORIZONTAL) */
+/* Contenedor vertical de bloques de estadísticas en la columna derecha */
 .hud-quick-stats {
-  display: grid;
-  grid-template-rows: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.stat-box {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
+  gap: 12px;
+  justify-content: space-between;
 }
 
+/* Tarjeta individual de métrica (Alineada horizontalmente: Número + Etiqueta) */
+.stat-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;  
+  padding: 14px 20px;
+}
+
+/* Valor numérico destacado */
 .stat-value {
   font-family: 'Orbitron', monospace;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 900;
+  min-width: 45px;   
+  padding-left: 15%;
 }
 
+/* Paleta de colores neón para las estadísticas */
 .neon-cyan { color: #38bdf8; text-shadow: 0 0 8px #0284c7; }
 .neon-purple { color: #c084fc; text-shadow: 0 0 8px #9333ea; }
 .neon-gold { color: #facc15; text-shadow: 0 0 8px #ca8a04; }
 
+/* Texto descriptivo de la métrica */
 .stat-label {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 0.75rem;
-  color: #a3a3a3;
-  letter-spacing: 1px;
+  font-size: 1rem;
+  color: #d8b4fe;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
-/* MISIONES PRIORITARIAS */
+/* SECCIÓN DE MISIONES PRIORITARIAS (TARJETAS DE TAREAS) */
+/* Grilla adaptable de misiones */
 .missions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
   gap: 15px;
 }
 
+/* Tarjeta individual de misión  */
 .mission-card {
   display: flex;
   flex-direction: column;
@@ -147,14 +150,8 @@
   border-left-color: #f3d0ff;
   box-shadow: 0 0 15px rgba(181, 34, 255, 0.25);
 }
-.mission-desc {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.85rem;
-  color: #a78bfa; /* Morado suave / Neón opaco */
-  margin: 6px 0 6px 0;
-  line-height: 1.3;
-}
 
+/* Cabecera de la misión (Tipo [INDIVIDUAL/GRUPAL] y Fecha límite) */
 .mission-top {
   display: flex;
   justify-content: space-between;
@@ -163,12 +160,23 @@
   color: #c084fc;
 }
 
+/* Título de la tarea */
 .mission-title {
   font-family: 'Orbitron', monospace;
   font-size: 1.1rem;
   color: #ffffff;
 }
 
+/* Descripción opcional de la tarea */
+.mission-desc {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+  color: #a78bfa;
+  margin: 6px 0;
+  line-height: 1.3;
+}
+
+/* Pie de la tarjeta (Recompensa XP + Botón Completar) */
 .mission-bottom {
   display: flex;
   justify-content: space-between;
@@ -176,6 +184,7 @@
   margin-top: 5px;
 }
 
+/* Recompensa de puntos XP */
 .mission-xp {
   font-family: 'Orbitron', monospace;
   font-size: 0.8rem;
@@ -183,6 +192,7 @@
   text-shadow: 0 0 5px #ca8a04;
 }
 
+/* Botón de acción para marcar como completada */
 .btn-mission-action {
   background: rgba(181, 34, 255, 0.2);
   border: 1px solid #b522ff;
@@ -198,36 +208,4 @@
   background: #b522ff;
   color: #ffffff;
   box-shadow: 0 0 10px #b522ff;
-}
-/* TARJETAS DE RESUMEN RÁPIDO (ALINEACIÓN HORIZONTAL) */
-.hud-quick-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  justify-content: space-between;
-}
-
-.stat-box {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: initial;
-  gap: 16px;  
-  padding: 14px 20px;
-}
-
-.stat-value {
-  font-family: 'Orbitron', monospace;
-  font-size: 1.8rem;
-  font-weight: 900;
-  min-width: 45px;   
-  padding-left: 15%;
-}
-
-.stat-label {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 1rem;
-  color: #d8b4fe;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
 }

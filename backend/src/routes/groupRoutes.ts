@@ -5,8 +5,8 @@ import {
   inviteFriend, 
   getPendingInvites, 
   respondInvite, getMembers 
-} from '../controllers/groupController';
-import { authenticateToken } from '../middlewares/authMiddleware';
+} from '../controllers/groupController.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 

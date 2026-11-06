@@ -82,7 +82,7 @@
 }
 
 .btn-logout:hover {
-    background: rgba(220, 38, 38, 0.85);
+    background: rgba(220, 38, 38, 0.466);
     color: #ffffff;
     box-shadow: 0 0 18px rgba(239, 68, 68, 0.6);
     transform: translateY(-1px);

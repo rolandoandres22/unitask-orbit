@@ -1,18 +1,23 @@
+// Detecta automáticamente si la app corre en local o en producción
+const API_URL_AMIGOS = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000/api'//ejecucion en local
+    : '/api';//ejecucion en versel
+
+//variables para almacenar la lista de amigos e historial de solicitudes
 let myFriends = [];
 let pendingRequests = [];
 
+// INICIALIZACIÓN DE SESIÓN Y VISTA
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Validar Sesión Activa
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');// Validar Sesión Activa (Autenticación por Token)
     const userStr = localStorage.getItem('user');
 
-    if (!token || !userStr) {
+    if (!token || !userStr) {//si no hay credenciales guardadas en el navegador redirige al Login
         window.location.href = '../../index.html';
         return;
     }
 
-    // 2. Renderizar Datos del Usuario
-    try {
+    try {// Renderizar Datos del Perfil del Usuario en el Header
         const user = JSON.parse(userStr);
         const userNameDisplay = document.getElementById('user-name');
         if (userNameDisplay) {
@@ -27,21 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Error al cargar la sesión:', e);
     }
 
-    // 3. Cargar Amigos y Solicitudes al Iniciar
-    loadFriendsData();
+    loadFriendsData();//cargar Amigos y Solicitudes al Iniciar el documento
 });
 
-/**
- * Cierra la sesión activa
- */
+//Destruye las variables de sesión guardadas en localStorage y redirige al Login.
 function logout() {
     localStorage.clear();
     window.location.href = '../../index.html';
 }
 
-/**
- * Control del Modal de Agregar Amigo (Abrir/Cerrar)
- */
+//controla la apertura y cierre del modal de agregar amigo.
 function toggleAddFriendModal(show) {
     const modal = document.getElementById('add-friend-modal');
     if (!modal) return;
@@ -61,26 +61,22 @@ function toggleAddFriendModal(show) {
     }
 }
 
-/**
- * Consulta la red de amigos y las solicitudes pendientes
- */
+//Consulta en paralelo los amigos confirmados y las solicitudes pendientes recibidas
 async function loadFriendsData() {
     const token = localStorage.getItem('token');
     
-    // Cargar Lista de Amigos y Solicitudes en paralelo
+    // Carga paralela para optimizar tiempos de respuesta de la API
     await Promise.all([
         loadFriendsList(token),
         loadPendingRequests(token)
     ]);
 }
 
-/**
- * Obtiene los amigos confirmados desde el backend
- */
+//Obtiene la lista de amigos confirmados desde el backend
 async function loadFriendsList(token) {
     const container = document.getElementById('friends-list-container');
     try {
-        const response = await fetch('http://localhost:3000/api/amigos', {
+        const response = await fetch(`${API_URL_AMIGOS}/amigos`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -97,13 +93,11 @@ async function loadFriendsList(token) {
     }
 }
 
-/**
- * Obtiene las solicitudes de amistad recibidas
- */
+//obtiene las solicitudes de amistad pendientes
 async function loadPendingRequests(token) {
     const container = document.getElementById('requests-list-container');
     try {
-        const response = await fetch('http://localhost:3000/api/amigos/solicitudes', {
+        const response = await fetch(`${API_URL_AMIGOS}/amigos/solicitudes`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -120,9 +114,7 @@ async function loadPendingRequests(token) {
     }
 }
 
-/**
- * Dibuja las tarjetas de los amigos en formato de fila/tabla
- */
+//Dibuja dinámicamente en el DOM la lista de tarjetas de amigos confirmados
 function renderFriendsList(friendsToRender = myFriends) {
     const container = document.getElementById('friends-list-container');
     if (!container) return;
@@ -159,9 +151,7 @@ function renderFriendsList(friendsToRender = myFriends) {
     });
 }
 
-/**
- * Filtra dinámicamente la lista local de amigos en tiempo real
- */
+//Filtra la lista local de amigos en tiempo real según el término ingresado en el buscador
 function filterLocalFriends(searchTerm) {
     const term = searchTerm.toLowerCase().trim();
     if (!term) {
@@ -177,9 +167,7 @@ function filterLocalFriends(searchTerm) {
     renderFriendsList(filtered);
 }
 
-/**
- * Dibuja las solicitudes pendientes recibidas en formato de fila/tabla
- */
+//Dibuja en pantalla la lista de solicitudes de amistad pendientes con botones de Aceptar/Rechazar.
 function renderPendingRequests() {
     const container = document.getElementById('requests-list-container');
     if (!container) return;
@@ -213,9 +201,8 @@ function renderPendingRequests() {
     });
 }
 
-/**
- * Búsqueda de usuarios por Nombre o Tag (#ID)
- */
+// BÚSQUEDA Y ACCIONES DE SOLICITUDES
+//Maneja la búsqueda de nuevos usuarios por Nombre o Tag (#ID) mediante consulta HTTP.
 async function handleSearchUser(event) {
     event.preventDefault();
     const queryInput = document.getElementById('search-query');
@@ -228,7 +215,7 @@ async function handleSearchUser(event) {
     try {
         container.innerHTML = `<p class="search-placeholder-msg">BUSCANDO EN EL NODO...</p>`;
 
-        const response = await fetch(`http://localhost:3000/api/usuarios/buscar?q=${encodeURIComponent(query)}`, {
+        const response = await fetch(`${API_URL_AMIGOS}/usuarios/buscar?q=${encodeURIComponent(query)}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -242,9 +229,7 @@ async function handleSearchUser(event) {
     }
 }
 
-/**
- * Dibuja los resultados de búsqueda de usuarios en formato de fila/tabla
- */
+//Dibuja los resultados de búsqueda de usuarios
 function renderSearchResults(results = []) {
     const container = document.getElementById('search-results-container');
     if (!container) return;
@@ -260,14 +245,13 @@ function renderSearchResults(results = []) {
         const row = document.createElement('div');
         row.className = 'hud-card friend-row-card search-row';
 
-        // Determinamos el estado para el botón de acción
+        // Evalúa el estado de la relación
         let actionBtnHTML = '';
         if (user.es_amigo) {
             actionBtnHTML = `<span class="badge-status-ok"><i class="fa-solid fa-check"></i> AMIGO</span>`;
         } else if (user.solicitud_enviada) {
             actionBtnHTML = `<span class="badge-status-pending"><i class="fa-solid fa-clock"></i> ENVIADA</span>`;
         } else {
-            // Se pasa `this` para enviar la referencia del elemento al handler
             actionBtnHTML = `
                 <button class="btn-hud-primary small" onclick="sendFriendRequest('${user.id_usuario}', this)" title="Enviar solicitud">
                     <i class="fa-solid fa-user-plus"></i> AGREGAR
@@ -288,15 +272,13 @@ function renderSearchResults(results = []) {
     });
 }
 
-/**
- * Envía una solicitud de amistad a otro usuario
- */
+//Envía una solicitud de amistad a un usuario objetivo.
 async function sendFriendRequest(idDestino, btnElem) {
     const token = localStorage.getItem('token');
     try {
         if (btnElem) btnElem.disabled = true;
 
-        const response = await fetch('http://localhost:3000/api/amigos/solicitud', {
+        const response = await fetch(`${API_URL_AMIGOS}/amigos/solicitud`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -308,7 +290,8 @@ async function sendFriendRequest(idDestino, btnElem) {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Error al enviar solicitud');
 
-        if (btnElem) {
+        
+        if (btnElem) {// reemplaza el botón por un cartel "ENVIADA"
             btnElem.outerHTML = `<span class="badge-status-pending"><i class="fa-solid fa-clock"></i> ENVIADA</span>`;
         }
 
@@ -318,46 +301,44 @@ async function sendFriendRequest(idDestino, btnElem) {
     }
 }
 
-/**
- * Acepta o rechaza una solicitud de amistad
- */
+
+
+//Responde a una solicitud de amistad pendiente Aceptar o Rechazar.
 async function respondRequest(idSolicitud, accion) {
     const token = localStorage.getItem('token');
     try {
-        const response = await fetch(`http://localhost:3000/api/amigos/solicitudes/${idSolicitud}`, {
+        const response = await fetch(`${API_URL_AMIGOS}/amigos/solicitudes/${idSolicitud}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ estado: accion }) // 'ACEPTAR' o 'RECHAZAR'
+            body: JSON.stringify({ estado: accion })
         });
 
         if (!response.ok) throw new Error('Error al responder solicitud');
 
-        loadFriendsData();
+        loadFriendsData(); // recarga la lista de amigos y solicitudes
 
     } catch (err) {
         alert(`ERROR AL PROCESAR SOLICITUD: ${err.message.toUpperCase()}`);
     }
 }
 
-/**
- * Elimina un amigo de la red
- */
+//Elimina a un amigo de la lista de vínculos confirmados.
 async function removeFriend(idAmigo) {
     if (!confirm('¿DESEAS ELIMINAR A ESTE ESTUDIANTE DE TU RED DE AMIGOS?')) return;
 
     const token = localStorage.getItem('token');
     try {
-        const response = await fetch(`http://localhost:3000/api/amigos/${idAmigo}`, {
+        const response = await fetch(`${API_URL_AMIGOS}/amigos/${idAmigo}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (!response.ok) throw new Error('Error al eliminar amigo');
 
-        loadFriendsData();
+        loadFriendsData();// Recarga la lista para actualizar la vista
 
     } catch (err) {
         alert(`NO SE PUDO ELIMINAR EL AMIGO: ${err.message.toUpperCase()}`);

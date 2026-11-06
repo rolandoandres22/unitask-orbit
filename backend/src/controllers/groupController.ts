@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as groupService from '../services/groupService';
+import * as groupService from '../services/groupService.js';
 
 
 export const getMembers = async (req: Request, res: Response) => {

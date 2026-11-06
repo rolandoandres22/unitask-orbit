@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniTask - Grupos</title>
+    <!-- Importo Fuentes de Google e Iconos de FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/menu.css">
-    <link rel="stylesheet" href="../../css/background.css">
-    <link rel="stylesheet" href="../amigos/css/amigos.css">
-    <link rel="stylesheet" href="css/grupos.css">
+    <!-- Importación de CSS necesarios -->
+    <link rel="stylesheet" href="../css/header.css"><!-- Estilos del header -->
+    <link rel="stylesheet" href="../css/menu.css"><!-- Menú lateral -->
+    <link rel="stylesheet" href="../../css/background.css"><!-- Fondo de partículas -->
+    <link rel="stylesheet" href="../amigos/css/amigos.css"><!--  toma estilos de amigos.css porque son similares  -->
+    <link rel="stylesheet" href="css/grupos.css"><!-- Estilos personalizados de Grupos -->
+    <link rel="stylesheet" href="../../css/ruleta.css"><!-- Ruleta de consejos -->
 </head>
 <body class="crt-flicker">
 
@@ -40,7 +43,7 @@
             <!-- HEADER -->
             <div class="dash-header">
                 <div>
-                    <h2 class="neon-text-glow">¡HOLA, <br><span id="user-name">ESTUDIANTE</span>!</h2>
+                    <h2 class="neon-text-glow">BIENVENIDO, <br><span id="user-name">ESTUDIANTE</span>!</h2>
                     <p class="hud-subtext">[ ID DE USUARIO: #<span id="user-tag">------</span> ]</p>
                 </div> 
                 <button onclick="logout()" class="btn-logout">CERRAR SESIÓN</button>
@@ -186,10 +189,9 @@
         </div>
     </div>
 
-    <script src="../../js/marco.js"></script>
-    <script src="../../js/background.js"></script>
-    <script src="js/grupos.js"></script>
-    <script src="../js/header.js"></script> 
-    <script src="./js/grupos.js"></script>
+    <script src="../../js/marco.js"></script><!-- Marco estilo consola gamer -->
+    <script src="../../js/background.js"></script><!-- js del fondo de particulas -->
+    <script src="./js/grupos.js"></script><!-- js de la sección grupos donde trae desde el backend los grupos activos -->
+    <script src="../../js/ruleta.js"></script><!-- js de la ruleta la cual trae consejo aleatorio y inyecta html del modal -->
 </body>
 </html>

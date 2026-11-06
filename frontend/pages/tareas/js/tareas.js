@@ -1,11 +1,17 @@
+// Detecta automáticamente si la aplicación se ejecuta localmente o en servidor desplegado
+const API_URL_TAREAS = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000/api'//para ejecucion desde servidor local
+    : '/api';//para ejecucion desde Versel
+
+// Cache local de misiones, filtro activo, tipo seleccionado y grupos donde el usuario es líder
 let allTasks = [];
 let currentFilter = 'PENDIENTE';
 let selectedTaskType = 'INDIVIDUAL';
-let myLeaderGroups = []; // Cache de grupos donde el usuario es LÍDER
+let myLeaderGroups = [];
 
+// INICIALIZACIÓN DE LA VISTA Y VALIDACIÓN DE SESIÓN
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Validar Sesión Activa
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');// Verificar presencia de credenciales en el almacenamiento local
     const userStr = localStorage.getItem('user');
 
     if (!token || !userStr) {
@@ -13,8 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // 2. Renderizar Datos del Usuario
-    try {
+    try {// Extraer y mostrar la identidad del usuario en la cabecera
         const user = JSON.parse(userStr);
         const userNameDisplay = document.getElementById('user-name');
         if (userNameDisplay) {
@@ -29,21 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Error al cargar la sesión:', e);
     }
 
-    // 3. Cargar Tareas desde el Servidor
-    loadTasks();
+    loadTasks();// Obtener el catálogo de tareas desde la API
 });
 
-/**
- * Cierra la sesión activa
- */
-function logout() {
+function logout() {//Cierra la sesión activa borrando credenciales locales y redirigiendo al login
     localStorage.clear();
     window.location.href = '../../index.html';
 }
 
-/**
- * Control del Modal (Abrir/Cerrar)
- */
+//Controla la apertura y el cierre del modal de creación/edición de tareas
 function toggleTaskModal(show) {
     const modal = document.getElementById('task-modal');
     if (!modal) return;
@@ -55,17 +54,15 @@ function toggleTaskModal(show) {
         const form = document.getElementById('create-task-form');
         if (form) {
             form.reset();
-            delete form.dataset.editId;
+            delete form.dataset.editId; // Limpia la marca de edición si existía
         }
-        setTaskType('INDIVIDUAL'); // Resetear a individual
+        setTaskType('INDIVIDUAL'); // Restablece por defecto a tarea individual
         const msgElem = document.getElementById('task-form-msg');
         if (msgElem) msgElem.textContent = '';
     }
 }
 
-/**
- * Conmuta entre tipo Individual y Grupal (DESHABILITA AMBOS SELECTS SI ES INDIVIDUAL)
- */
+//Alterna el tipo de tarea entre INDIVIDUAL y GRUPAL
 async function setTaskType(type) {
     selectedTaskType = type;
     const btnInd = document.getElementById('btn-type-individual');
@@ -77,7 +74,7 @@ async function setTaskType(type) {
         btnInd?.classList.add('active');
         btnGrup?.classList.remove('active');
 
-        // DESHABILITADOS EN MODO INDIVIDUAL
+        // Deshabilita selects grupales al estar en modo individual
         if (selectGroup) {
             selectGroup.disabled = true;
             selectGroup.innerHTML = '<option value="">No aplica (Tarea individual)</option>';
@@ -90,7 +87,7 @@ async function setTaskType(type) {
         btnGrup?.classList.add('active');
         btnInd?.classList.remove('active');
 
-        // HABILITA SELECT DE GRUPOS Y CARGA GRUPOS DONDE ES LÍDER
+        // Habilita el selector de grupos y consulta cuáles lidera el usuario
         if (selectGroup) {
             selectGroup.disabled = false;
             selectGroup.innerHTML = '<option value="">CARGANDO GRUPOS...</option>';
@@ -104,16 +101,14 @@ async function setTaskType(type) {
     }
 }
 
-/**
- * Carga los grupos donde el usuario activo tiene rol de LÍDER
- */
+//Obtiene desde el servidor los grupos de estudio donde el usuario activo figura con rol de LÍDER
 async function loadLeaderGroups() {
     const token = localStorage.getItem('token');
     const selectGroup = document.getElementById('task-group-select');
     if (!selectGroup) return;
 
     try {
-        const response = await fetch('http://localhost:3000/api/grupos', {
+        const response = await fetch(`${API_URL_TAREAS}/grupos`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -122,7 +117,7 @@ async function loadLeaderGroups() {
         const result = await response.json();
         const groups = result.data || (Array.isArray(result) ? result : []);
 
-        // Filtrar exclusivamente los grupos donde el usuario es LÍDER
+        // Filtrado exclusivo de grupos bajo el liderazgo del usuario
         myLeaderGroups = groups.filter(g => (g.rol || '').toUpperCase() === 'LIDER' || (g.rol || '').toUpperCase() === 'LÍDER');
 
         if (myLeaderGroups.length === 0) {
@@ -142,9 +137,7 @@ async function loadLeaderGroups() {
     }
 }
 
-/**
- * Evento al seleccionar un grupo: Carga sus miembros en el segundo select
- */
+//Carga los integrantes del grupo elegido para asignarles la responsabilidad de la tarea
 async function handleGroupChange(idGrupo) {
     const selectAssign = document.getElementById('task-group-assign');
     if (!selectAssign) return;
@@ -160,7 +153,7 @@ async function handleGroupChange(idGrupo) {
     selectAssign.innerHTML = '<option value="">CARGANDO MIEMBROS...</option>';
 
     try {
-        const response = await fetch(`http://localhost:3000/api/grupos/${idGrupo}/miembros`, {
+        const response = await fetch(`${API_URL_TAREAS}/grupos/${idGrupo}/miembros`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -190,13 +183,11 @@ async function handleGroupChange(idGrupo) {
     }
 }
 
-/**
- * Consulta la lista completa de tareas
- */
+//Pide al backend el listado completo de tareas pertenecientes al usuario
 async function loadTasks() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/tareas', {
+        const response = await fetch(`${API_URL_TAREAS}/tareas`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -214,9 +205,7 @@ async function loadTasks() {
     }
 }
 
-/**
- * Función para calcular XP en base a la prioridad
- */
+//Calcula los puntos de XP que otorga una misión según su rango de prioridad
 function calcularXP(prioridad) {
     switch (prioridad) {
         case 'ALTA': return 40;
@@ -226,9 +215,7 @@ function calcularXP(prioridad) {
     }
 }
 
-/**
- * Auxiliar para formatear fecha con hora
- */
+//Formatea fechas 
 function formatDateTime(dateStr) {
     if (!dateStr) return '---';
     const dateObj = new Date(dateStr);
@@ -241,15 +228,14 @@ function formatDateTime(dateStr) {
     return dateObj.toLocaleDateString([], { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).toUpperCase();
 }
 
-/**
- * Renderiza las tarjetas de tareas
- */
+//genera las tarjetas de misiones en pantalla según el filtro activo
 function renderTasks() {
     const container = document.getElementById('tasks-list-container');
     if (!container) return;
 
     container.innerHTML = '';
 
+    // Filtrado local según la categoría seleccionada en los botones
     const filtered = allTasks.filter(t => {
         if (currentFilter === 'TODAS') return true;
         if (currentFilter === 'PENDIENTE' || currentFilter === 'COMPLETADA' || currentFilter === 'CANCELADA') {
@@ -337,6 +323,7 @@ function renderTasks() {
     });
 }
 
+// Despliega o cierra el menú de opciones (tres puntos) de cada tarjeta de tarea
 function toggleTaskMenu(event, idTarea) {
     event.stopPropagation();
     document.querySelectorAll('.task-dropdown-menu').forEach(menu => {
@@ -347,10 +334,11 @@ function toggleTaskMenu(event, idTarea) {
     if (menu) menu.classList.toggle('hidden');
 }
 
-document.addEventListener('click', () => {
+document.addEventListener('click', () => {//cierra cualquier menú flotante abierto al hacer clic fuera
     document.querySelectorAll('.task-dropdown-menu').forEach(menu => menu.classList.add('hidden'));
 });
 
+//Cambia el filtro actual de tareas y actualiza el botón activo en la interfaz
 function filterTasks(filter, buttonElem) {
     currentFilter = filter;
     document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
@@ -358,9 +346,8 @@ function filterTasks(filter, buttonElem) {
     renderTasks();
 }
 
-/**
- * Procesa la Creación o Edición de Tarea
- */
+// ACCIONES DE FORMULARIO: CREACIÓN, EDICIÓN, ESTADOS Y ELIMINACIÓN
+// Procesa la creación de una nueva tarea o guarda los cambios de una existente
 async function handleCreateTask(event) {
     event.preventDefault();
     const token = localStorage.getItem('token');
@@ -377,7 +364,7 @@ async function handleCreateTask(event) {
     const id_grupo = selectedTaskType === 'GRUPAL' ? document.getElementById('task-group-select').value : null;
     const id_usuario_asignado = selectedTaskType === 'GRUPAL' ? document.getElementById('task-group-assign').value : null;
 
-    // 1. Validación de Fechas
+    // 1. Validación de congruencia de fechas
     if (new Date(fecha_inicio) > new Date(fecha_limite)) {
         if (msgElem) {
             msgElem.style.color = '#f87171';
@@ -386,7 +373,7 @@ async function handleCreateTask(event) {
         return;
     }
 
-    // 2. Validación de Selección Grupal
+    // 2. Validación de asignaciones en tareas grupales
     if (selectedTaskType === 'GRUPAL' && (!id_grupo || !id_usuario_asignado)) {
         if (msgElem) {
             msgElem.style.color = '#f87171';
@@ -395,7 +382,7 @@ async function handleCreateTask(event) {
         return;
     }
 
-    // 3. Estructura completa del Body
+    // 3. Estructura de datos a enviar al backend
     const bodyData = { 
         titulo, 
         descripcion, 
@@ -414,8 +401,8 @@ async function handleCreateTask(event) {
         }
 
         const url = editId 
-            ? `http://localhost:3000/api/tareas/${editId}` 
-            : 'http://localhost:3000/api/tareas';
+            ? `${API_URL_TAREAS}/tareas/${editId}` 
+            : `${API_URL_TAREAS}/tareas`;
 
         const method = editId ? 'PUT' : 'POST';
 
@@ -456,6 +443,7 @@ async function handleCreateTask(event) {
     }
 }
 
+//Rellena el formulario con los datos de una tarea individual para proceder a editarla
 function openEditTaskModal(idTarea) {
     const tarea = allTasks.find(t => t.id_tarea === idTarea);
     if (!tarea) return;
@@ -477,10 +465,11 @@ function openEditTaskModal(idTarea) {
     toggleTaskModal(true);
 }
 
+//Envía la petición PATCH para marcar una tarea como COMPLETADA
 async function completeTask(idTarea) {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/tareas/${idTarea}/completar`, {
+        const response = await fetch(`${API_URL_TAREAS}/tareas/${idTarea}/completar`, {
             method: 'PATCH',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -493,11 +482,12 @@ async function completeTask(idTarea) {
     }
 }
 
+//Envía la petición PATCH para marcar una tarea como CANCELADA
 async function cancelTask(idTarea) {
     if (!confirm('¿Deseas marcar esta misión como CANCELADA?')) return;
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/tareas/${idTarea}/cancelar`, {
+        const response = await fetch(`${API_URL_TAREAS}/tareas/${idTarea}/cancelar`, {
             method: 'PATCH',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -513,11 +503,12 @@ async function cancelTask(idTarea) {
     }
 }
 
+//Solicita la eliminación definitiva de una tarea en la base de datos
 async function deleteTask(idTarea) {
     if (!confirm('¿CONFIRMAR ELIMINACIÓN PERMANENTE DE ESTA MISIÓN?')) return;
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/tareas/${idTarea}`, {
+        const response = await fetch(`${API_URL_TAREAS}/tareas/${idTarea}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });

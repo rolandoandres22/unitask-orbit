@@ -3,30 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniTask - Estadisticas</title>
+    <title>UniTask - Estadísticas</title>
+    <!-- Importo Fuentes de Google e Iconos de FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/menu.css">
-    <link rel="stylesheet" href="../../css/background.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Importación de CSS -->
+    <link rel="stylesheet" href="../css/header.css"> <!-- Estilos del header -->
+    <link rel="stylesheet" href="../css/menu.css"><!-- Menú lateral -->
+    <link rel="stylesheet" href="../../css/background.css"><!-- Fondo de partículas -->
+    <link rel="stylesheet" href="../../css/ruleta.css"><!-- Ruleta de consejos -->
+    <link rel="stylesheet" href="css/estadisticas.css"><!-- Estilos personalizados de Estadisticas -->
 </head>
 <body class="crt-flicker">
 
-    <!-- Auras de Energía Neón -->
+    <!-- auras de Energía Neón -->
     <div class="aura-wrapper">
         <div class="aura-blob-1"></div>
         <div class="aura-blob-2"></div>
     </div>
 
-    <!-- Capa de desenfoque y partículas -->
+    <!-- capa de desenfoque y partículas -->
     <div id="blurLayer" class="background-blur-layer"></div>
     <canvas id="crackCanvas"></canvas>
 
-    <!-- Overlays de pantalla CRT -->
+    <!-- overlays de pantalla CRT -->
     <div class="scanlines"></div>
     <div class="vignette"></div>
 
-    <!-- MARCO HUD PRINCIPAL -->
+    <!-- MARCO PRINCIPAL -->
     <div class="hud-main-container">
 
         <!-- CONTENEDOR DEL MARCO -->
@@ -37,13 +44,13 @@
             <!-- HEADER -->
             <div class="dash-header">
                 <div>
-                    <h2 class="neon-text-glow">¡HOLA, <br><span id="user-name">ESTUDIANTE</span>!</h2>
+                    <h2 class="neon-text-glow">BIENVENIDO, <br><span id="user-name">ESTUDIANTE</span>!</h2>
                     <p class="hud-subtext">[ ID DE USUARIO: #<span id="user-tag">------</span> ]</p>
                 </div> 
                 <button onclick="logout()" class="btn-logout">CERRAR SESIÓN</button>
             </div>
 
-            <!-- CUERPO PRINCIPAL (MENÚ LATERAL Y CONTENIDO) -->
+            <!-- CUERPO PRINCIPAL -->
             <div class="dash-body">
                 <!-- MENÚ NAVEGACIÓN LATERAL HUD -->
                 <nav class="hud-sidebar">
@@ -60,7 +67,6 @@
                             <span class="nav-indicator">></span>
                             <span class="nav-text">AMIGOS</span>
                         </li>
-    
                         <li class="hud-nav-item" onclick="location.href='../grupos/grupos.html'">
                             <span class="nav-indicator">></span>
                             <span class="nav-text">GRUPOS</span>
@@ -71,7 +77,6 @@
                         </li>
                     </ul>
 
-                    <!-- SECCIÓN INFERIOR DEL MENÚ -->
                     <div class="hud-nav-bottom">
                         <ul class="hud-nav-list">
                             <li class="hud-nav-item" onclick="location.href='../perfil/perfil.html'">
@@ -82,15 +87,96 @@
                     </div>
                 </nav>
 
-                <!-- CONTENIDO PRINCIPAL DEL DASHBOARD -->
+                <!-- CONTENIDO PRINCIPAL: MÉTRICAS HUD -->
                 <main class="hud-main-content">
-                 
+                    <div class="stats-header-bar">
+                        <div class="section-title">
+                            <span class="neon-indicator">///</span>
+                            <h2>MÉTRICAS Y RENDIMIENTO</h2>
+                        </div>
+                    </div>
+
+                    <!-- TARJETAS TOP KPIs -->
+                    <div class="stats-kpi-grid">
+                        <div class="hud-card kpi-card">
+                            <i class="fa-solid fa-circle-check kpi-icon"></i>
+                            <span class="kpi-title">COMPLETADAS</span>
+                            <span id="kpi-completadas" class="kpi-value">0</span>
+                        </div>
+                        <div class="hud-card kpi-card">
+                            <i class="fa-solid fa-chart-line kpi-icon"></i>
+                            <span class="kpi-title">EFECTIVIDAD</span>
+                            <span id="kpi-efectividad" class="kpi-value">0%</span>
+                        </div>
+                        <div class="hud-card kpi-card">
+                            <i class="fa-solid fa-fire kpi-icon"></i>
+                            <span class="kpi-title">RACHA ACTUAL</span>
+                            <span id="kpi-racha" class="kpi-value">0 DÍAS</span>
+                        </div>
+                        <div class="hud-card kpi-card">
+                            <i class="fa-solid fa-bolt kpi-icon"></i>
+                            <span class="kpi-title">TOTAL XP</span>
+                            <span id="kpi-xp" class="kpi-value">0 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN DE GRÁFICOS -->
+                    <div class="stats-charts-grid">
+                        <!-- GRÁFICO ESTADO DE TAREAS -->
+                        <div class="hud-card chart-card">
+                            <h3 class="chart-title">[ BALANCE DE MISIONES ]</h3>
+                            <div class="chart-container">
+                                <canvas id="chartEstado"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- GRÁFICO PRIORIDADES -->
+                        <div class="hud-card chart-card">
+                            <h3 class="chart-title">[ COMPLETADAS POR PRIORIDAD ]</h3>
+                            <div class="chart-container">
+                                <canvas id="chartPrioridad"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FILA INFERIOR: TARJETAS RANGO / DIARIAS / MES -->
+                    <div class="stats-cards-row" style="margin-top: 1.5rem;">
+                        <div class="hud-card mini-stats-card">
+                            <span class="card-subtitle">RANGO</span>
+                            <h3 id="card-rango-nombre" class="card-main-val">RANGO E</h3>
+                            
+                            <div class="progress-bar-container" style="width: 100%; background: rgba(181, 34, 255, 0.15); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px;">
+                                <div id="card-rango-progress" class="progress-bar-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #b522ff, #00f0ff); transition: width 0.5s ease;"></div>
+                            </div>
+                        </div>
+
+                        <div class="hud-card mini-stats-card">
+                            <span class="card-subtitle">TAREAS DIARIAS</span>
+                            <h3 id="card-tareas-diarias" class="card-main-val">0</h3>
+                        </div>
+
+                        <div class="hud-card mini-stats-card">
+                            <span class="card-subtitle">TAREAS DEL MES</span>
+                            <h3 id="card-tareas-mes" class="card-main-val">0</h3>
+                        </div>
+                        
+                    </div>
+                    <!-- GRÁFICO DE EVOLUCIÓN HISTÓRICA -->
+                    <div class="hud-card chart-card" style="margin-top: 1.5rem;">
+                        <h3 class="chart-title">[ EVOLUCIÓN DE ACTIVIDAD ]</h3>
+                        <div class="chart-container" style="position: relative; height: 260px;">
+                            <canvas id="chartEvolucion"></canvas>
+                        </div>
+                    </div>
+
                 </main>
             </div>
         </div>
 
     </div>
-    <script src="../../js/marco.js"></script>
-    <script src="../../js/background.js"></script>
+    <script src="../../js/marco.js"></script><!-- Marco estilo consola gamer -->
+    <script src="../../js/background.js"></script><!-- js del fondo -->
+    <script src="../../js/ruleta.js"></script><!-- js de la ruleta la cual trae consejo aleatorio y inyecta html del modal -->
+    <script src="js/estadisticas.js"></script><!-- js de la seccion estadisticas, trae del back toda la info de las cards y graficos -->
 </body>
 </html>

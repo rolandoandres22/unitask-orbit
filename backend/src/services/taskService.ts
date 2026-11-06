@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/db';
+import { supabaseAdmin } from '../config/db.js';
 
 export const getTasksByUser = async (userId: string) => {
   // 1. Consultar tareas individuales

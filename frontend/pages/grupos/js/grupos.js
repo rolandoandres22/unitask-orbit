@@ -1,8 +1,15 @@
+// Detecta automáticamente si la app se ejecuta localmente o en un servidor de producción
+const API_URL_GRUPOS = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000/api'//para ejecucion local
+    : '/api';//para que funcione en versel
+
+// Variables de estado local para la gestión de grupos e invitaciones
 let currentGroupIdForInvite = null;
 let localGroupsList = [];
-let sentGroupInvites = new Set(); // Guarda los IDs de usuarios a quienes ya se les envió invitación
+let sentGroupInvites = new Set(); // Almacena temporalmente los IDs de usuarios invitados en la sesión activa
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Validar autenticación activa mediante token en localStorage
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
 
@@ -11,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    try {
+    try {// Extraer y renderizar los datos del usuario en la cabecera
         const user = JSON.parse(userStr);
         const userNameDisplay = document.getElementById('user-name');
         if (userNameDisplay) {
@@ -26,14 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Error al cargar la sesión:', e);
     }
 
-    loadGroupsData();
+    loadGroupsData();//cargar lista de grupos e invitaciones 
 });
 
+// Destruye la sesión activa y redirige al inicio de la plataforma
 function logout() {
     localStorage.clear();
     window.location.href = '../../index.html';
 }
 
+//Ejecuta la carga en paralelo de mis grupos e invitaciones pendientes recibidas
 async function loadGroupsData() {
     await Promise.all([
         loadMyGroups(),
@@ -41,15 +50,13 @@ async function loadGroupsData() {
     ]);
 }
 
-/* ==========================================================================
-   1. GESTIÓN DE MIS GRUPOS (CON ACORDEÓN DE MIEMBROS)
-   ========================================================================== */
+//Consulta la API para obtener los grupos a los que pertenece el usuario
 async function loadMyGroups() {
     const token = localStorage.getItem('token');
     const container = document.getElementById('groups-list-container');
     
     try {
-        const res = await fetch('http://localhost:3000/api/grupos', {
+        const res = await fetch(`${API_URL_GRUPOS}/grupos`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -68,6 +75,7 @@ async function loadMyGroups() {
     }
 }
 
+//Dibuja en el DOM la lista de tarjetas de grupos en formato acordeón
 function renderGroupsList(groups = localGroupsList) {
     const container = document.getElementById('groups-list-container');
     if (!container) return;
@@ -86,6 +94,7 @@ function renderGroupsList(groups = localGroupsList) {
         const wrapper = document.createElement('div');
         wrapper.className = 'group-accordion-item';
 
+        // Evalúa si el usuario actual es Líder del grupo para habilitar el botón de invitar
         const esLider = (grupo.rol || '').toUpperCase() === 'LIDER' || (grupo.rol || '').toUpperCase() === 'LÍDER';
         const inviteBtnHTML = esLider ? `
             <button class="btn-hud-primary small" onclick="event.stopPropagation(); openInviteModal('${grupo.id_grupo}')" title="Invitar amigo">
@@ -93,7 +102,7 @@ function renderGroupsList(groups = localGroupsList) {
             </button>
         ` : '';
 
-        // ✅ SE AGREGA LA CLASE 'hidden' INICIALMENTE Y EL ESTILO PARA QUE NO SE MUESTRE
+        // Estructura de cabecera de acordeón y panel de miembros desplegable oculto inicialmente
         wrapper.innerHTML = `
             <div class="hud-card friend-row-card group-header-row" onclick="toggleGroupAccordion('${grupo.id_grupo}')">
                 <div class="friend-col-info">
@@ -115,20 +124,17 @@ function renderGroupsList(groups = localGroupsList) {
     });
 }
 
-/**
- * Controla el despliegue y cierre del acordeón
- */
+//Controla el acordeón de miembros de un grupo
 async function toggleGroupAccordion(idGrupo) {
     const panel = document.getElementById(`members-panel-${idGrupo}`);
     const icon = document.getElementById(`icon-${idGrupo}`);
 
     if (!panel) return;
 
-    // Verificar si el panel está visible
     const isHidden = panel.style.display === 'none' || panel.classList.contains('hidden');
 
     if (isHidden) {
-        // ABRIR ACORDEÓN
+        // ABRIR ACORDEÓN Y CARGAR MIEMBROS
         panel.classList.remove('hidden');
         panel.style.display = 'block';
         if (icon) icon.style.transform = 'rotate(90deg)';
@@ -141,16 +147,14 @@ async function toggleGroupAccordion(idGrupo) {
     }
 }
 
-/**
- * Consulta y renderiza los integrantes de un grupo en el acordeón
- */
+//muestra la lista de miembros pertenecientes a un grupo
 async function loadGroupMembers(idGrupo) {
     const token = localStorage.getItem('token');
     const panel = document.getElementById(`members-panel-${idGrupo}`);
     if (!panel) return;
 
     try {
-        const res = await fetch(`http://localhost:3000/api/grupos/${idGrupo}/miembros`, {
+        const res = await fetch(`${API_URL_GRUPOS}/grupos/${idGrupo}/miembros`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -188,15 +192,13 @@ async function loadGroupMembers(idGrupo) {
     }
 }
 
-/* ==========================================================================
-   2. SOLICITUDES PENDIENTES DE GRUPO
-   ========================================================================== */
+//Consulta la lista de invitaciones pendientes
 async function loadGroupRequests() {
     const token = localStorage.getItem('token');
     const container = document.getElementById('group-requests-container');
 
     try {
-        const res = await fetch('http://localhost:3000/api/grupos/invitaciones/pendientes', {
+        const res = await fetch(`${API_URL_GRUPOS}/grupos/invitaciones/pendientes`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -236,10 +238,11 @@ async function loadGroupRequests() {
     }
 }
 
+//Responde ACEPTADA / RECHAZADA a una invitación de grupo enviada
 async function respondGroupInvite(idGrupoMiembro, estado) {
     const token = localStorage.getItem('token');
     try {
-        const res = await fetch('http://localhost:3000/api/grupos/responder-invitacion', {
+        const res = await fetch(`${API_URL_GRUPOS}/grupos/responder-invitacion`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -250,16 +253,15 @@ async function respondGroupInvite(idGrupoMiembro, estado) {
 
         if (!res.ok) throw new Error('Error al responder invitación');
 
-        loadGroupsData();
+        loadGroupsData();//recarga el panel para actualizar
 
     } catch (err) {
         alert(`ERROR AL PROCESAR INVITACIÓN: ${err.message.toUpperCase()}`);
     }
 }
 
-/* ==========================================================================
-   3. MODAL DE CREAR GRUPO
-   ========================================================================== */
+// MODAL DE CREACIÓN DE NUEVO GRUPO
+//Abre o cierra el modal para crear un grupo nuevo
 function toggleCreateGroupModal(show) {
     const modal = document.getElementById('create-group-modal');
     if (!modal) return;
@@ -274,6 +276,7 @@ function toggleCreateGroupModal(show) {
     }
 }
 
+//Procesa el envío del formulario de creación de grupo
 async function handleCreateGroup(event) {
     event.preventDefault();
     const token = localStorage.getItem('token');
@@ -283,7 +286,7 @@ async function handleCreateGroup(event) {
     if (!nombre_grupo) return;
 
     try {
-        const res = await fetch('http://localhost:3000/api/grupos', {
+        const res = await fetch(`${API_URL_GRUPOS}/grupos`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -303,9 +306,7 @@ async function handleCreateGroup(event) {
     }
 }
 
-/* ==========================================================================
-   4. MODAL INVITAR AMIGOS (CON INDICADOR DE "ENVIADA")
-   ========================================================================== */
+//Alterna la visibilidad del modal de invitaciones a amigos
 function toggleInviteModal(show) {
     const modal = document.getElementById('invite-friend-modal');
     if (!modal) return;
@@ -319,6 +320,7 @@ function toggleInviteModal(show) {
     }
 }
 
+//Abre el modal de invitación filtrando la red de amigos según su estado respecto al grupo
 async function openInviteModal(idGrupo) {
     currentGroupIdForInvite = idGrupo;
     sentGroupInvites.clear();
@@ -328,13 +330,12 @@ async function openInviteModal(idGrupo) {
     const container = document.getElementById('friends-to-invite-container');
     container.innerHTML = '<p class="search-placeholder-msg">CARGANDO LISTA DE ALIADOS...</p>';
 
-    try {
-        // 1. Obtener la lista de amigos del usuario y la lista de integrantes del grupo en paralelo
-        const [resAmigos, resMiembros] = await Promise.all([
-            fetch('http://localhost:3000/api/amigos', {
+    try {// Obtiene la lista de amigos y la lista actual de miembros del grupo
+        const [resAmigos, resMiembros] = await Promise.all([ 
+            fetch(`${API_URL_GRUPOS}/amigos`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             }),
-            fetch(`http://localhost:3000/api/grupos/${idGrupo}/miembros`, {
+            fetch(`${API_URL_GRUPOS}/grupos/${idGrupo}/miembros`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
         ]);
@@ -357,7 +358,7 @@ async function openInviteModal(idGrupo) {
             return;
         }
 
-        // 2. Clasificar los amigos en 3 categorías
+        // los clasifica
         const disponibles = [];
         const enviadas = [];
         const yaMiembros = [];
@@ -375,11 +376,9 @@ async function openInviteModal(idGrupo) {
             }
         });
 
-        // 3. Unir los amigos en el orden deseado: Disponibles -> Enviadas -> Ya miembros
-        const sortedFriends = [...disponibles, ...enviadas, ...yaMiembros];
+        const sortedFriends = [...disponibles, ...enviadas, ...yaMiembros];// muestra primero los disponibles
 
-        // 4. Renderizar la lista
-        sortedFriends.forEach(amigo => {
+        sortedFriends.forEach(amigo => {//Renderiza las filas en el contenedor del modal
             const row = document.createElement('div');
             row.className = 'hud-card friend-row-card search-row';
 
@@ -417,6 +416,7 @@ async function openInviteModal(idGrupo) {
     }
 }
 
+//envía una invitación de grupo a un amigo seleccionado
 async function sendGroupInvite(idUsuarioInvitado, btnElem) {
     if (!currentGroupIdForInvite) return;
     const token = localStorage.getItem('token');
@@ -424,7 +424,7 @@ async function sendGroupInvite(idUsuarioInvitado, btnElem) {
     try {
         if (btnElem) btnElem.disabled = true;
 
-        const res = await fetch('http://localhost:3000/api/grupos/invitar', {
+        const res = await fetch(`${API_URL_GRUPOS}/grupos/invitar`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -439,11 +439,9 @@ async function sendGroupInvite(idUsuarioInvitado, btnElem) {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Error al enviar la invitación');
 
-        // Agregar al set local de invitaciones enviadas
-        sentGroupInvites.add(idUsuarioInvitado);
+        sentGroupInvites.add(idUsuarioInvitado);// Agregar al set local de invitaciones enviadas en esta sesión
 
-        // Reemplazar botón por la etiqueta de estado ENVIADA
-        if (btnElem) {
+        if (btnElem) {//reemplazar el botón por el cartel "ENVIADA"
             btnElem.outerHTML = `<span class="badge-status-pending"><i class="fa-solid fa-clock"></i> ENVIADA</span>`;
         }
 

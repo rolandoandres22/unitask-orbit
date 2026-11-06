@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniTask - Perfil</title>
+    <!-- Importo Fuentes de Google e Iconos de FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/menu.css">
-    <link rel="stylesheet" href="../../css/background.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Importación de CSS -->
+    <link rel="stylesheet" href="../css/header.css"><!-- Estilos del header -->
+    <link rel="stylesheet" href="../css/menu.css"><!-- Menú lateral -->
+    <link rel="stylesheet" href="../../css/background.css"><!-- Fondo de partículas -->
+    <link rel="stylesheet" href="css/perfil.css"><!-- Estilos personalizados de Perfil -->
+    <link rel="stylesheet" href="../../css/ruleta.css"><!-- Ruleta de consejos -->
 </head>
 <body class="crt-flicker">
 
@@ -29,7 +34,7 @@
     <!-- MARCO HUD PRINCIPAL -->
     <div class="hud-main-container">
 
-        <!-- CONTENEDOR DEL MARCO -->
+        <!-- CONTENEDOR DEL MARCO SVG -->
         <div id="hud-frame-container"></div>
 
         <!-- DASHBOARD PANEL -->
@@ -37,7 +42,7 @@
             <!-- HEADER -->
             <div class="dash-header">
                 <div>
-                    <h2 class="neon-text-glow">¡HOLA, <br><span id="user-name">ESTUDIANTE</span>!</h2>
+                    <h2 class="neon-text-glow">BIENVENIDO, <br><span id="user-name">ESTUDIANTE</span>!</h2>
                     <p class="hud-subtext">[ ID DE USUARIO: #<span id="user-tag">------</span> ]</p>
                 </div> 
                 <button onclick="logout()" class="btn-logout">CERRAR SESIÓN</button>
@@ -60,7 +65,6 @@
                             <span class="nav-indicator">></span>
                             <span class="nav-text">AMIGOS</span>
                         </li>
-    
                         <li class="hud-nav-item" onclick="location.href='../grupos/grupos.html'">
                             <span class="nav-indicator">></span>
                             <span class="nav-text">GRUPOS</span>
@@ -82,15 +86,88 @@
                     </div>
                 </nav>
 
-                <!-- CONTENIDO PRINCIPAL DEL DASHBOARD -->
+                <!-- CONTENIDO PRINCIPAL: PERFIL DE USUARIO -->
                 <main class="hud-main-content">
-                 
+                    <div class="profile-header-bar">
+                        <div class="section-title">
+                            <span class="neon-indicator">///</span>
+                            <h2>CONFIGURACIÓN DE EXPEDIENTE</h2>
+                        </div>
+                    </div>
+
+                    <div class="profile-grid">
+                        <!-- TARJETA LATERAL DE RESUMEN Y RANGO -->
+                        <div class="hud-card profile-card-summary">
+                            <div class="avatar-hud-wrapper">
+                                <div class="avatar-frame">
+                                    <i class="fa-solid fa-user-astronaut avatar-icon"></i>
+                                </div>
+                                <span id="profile-rank-badge" class="profile-rank-badge">RANGO -</span>
+                            </div>
+
+                            <h3 id="profile-display-name" class="profile-name-text">CARGANDO...</h3>
+                            <p class="hud-subtext">[ ID: #<span id="profile-display-tag">------</span> ]</p>
+
+                            <div class="profile-xp-box">
+                                <span class="xp-title">EXPERIENCIA ACUMULADA</span>
+                                <span id="profile-xp-total" class="xp-val">0 XP</span>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN DE FORMULARIOS DE EDICIÓN -->
+                        <div class="profile-forms-column">
+                            
+                            <!-- FORMULARIO 1: DATOS PERSONALES -->
+                            <div class="hud-card profile-card-form">
+                                <form id="edit-profile-form" onsubmit="handleUpdateProfile(event)">
+                                    <div class="form-group">
+                                        <label for="input-fullname">Nombre completo *</label>
+                                        <input type="text" id="input-fullname" class="hud-input" required maxlength="100" placeholder="Tu Nombre">
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn-hud-primary">
+                                            <i class="fa-solid fa-floppy-disk"></i> GUARDAR DATOS
+                                        </button>
+                                        <span id="profile-form-msg" class="form-msg"></span>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- FORMULARIO 2: CAMBIO DE CONTRASEÑA -->
+                            <div class="hud-card profile-card-form" style="margin-top: 1.5rem;">
+                                <form id="change-password-form" onsubmit="handleChangePassword(event)">
+                                    <div class="form-row-pass">
+                                        <div class="form-group">
+                                            <label for="input-new-pass">Nueva Contraseña *</label>
+                                            <input type="password" id="input-new-pass" class="hud-input" required placeholder="••••••••">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="input-repeat-pass">Repetir Contraseña *</label>
+                                            <input type="password" id="input-repeat-pass" class="hud-input" required placeholder="••••••••">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" id="btn-submit-pass" class="btn-hud-primary">
+                                            <i class="fa-solid fa-key"></i> ACTUALIZAR CONTRASEÑA
+                                        </button>
+                                        <span id="pass-form-msg" class="form-msg"></span>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
                 </main>
             </div>
         </div>
 
     </div>
-    <script src="../../js/marco.js"></script>
-    <script src="../../js/background.js"></script>
+    <script src="../../js/marco.js"></script><!-- Marco estilo consola gamer -->
+    <script src="../../js/background.js"></script><!-- JS del fondo -->
+    <script src="js/perfil.js"></script><!-- JS de perfil (edición de nombre y contraseña) -->
+    <script src="../../js/ruleta.js"></script><!-- JS de la ruleta de consejos -->
 </body>
 </html>

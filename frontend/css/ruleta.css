@@ -1,0 +1,177 @@
+/* CONTENEDOR FLOTANTE FLOTANDO ABAJO A LA DERECHA */
+.ruleta-widget-container {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    z-index: 99999 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.ruleta-widget-container:hover {
+    transform: scale(1.1);
+}
+
+/* INDICADOR DE FLECHA  */
+.ruleta-pointer {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 14px solid #f3d0ff;
+    position: absolute;
+    top: -10px;
+    z-index: 100000;
+    filter: drop-shadow(0 0 8px #b522ff);
+}
+
+/* RULETA DE UIVERSE */
+.ruleta-wheel-box {
+    position: relative !important;
+    width: 75px !important;
+    height: 75px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    border: 2px solid #b522ff81 !important;
+    box-shadow: 
+        0 0 12px rgba(181, 34, 255, 0.521), 
+        0 0 25px rgba(130, 0, 255, 0.5),
+        inset 0 0 12px rgba(243, 208, 255, 0.3) !important;
+    transition: transform 3s cubic-bezier(0.15, 0.85, 0.35, 1.05);
+}
+
+.ruleta-wheel-box span {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 50%;
+    border-radius: 50%;
+    transform-origin: left;
+}
+
+.ruleta-wheel-box span:nth-child(1) {
+    background: #0fa503;
+    transform: rotate(0deg);
+    z-index: 2;
+}
+
+.ruleta-wheel-box span:nth-child(2) {
+    background: #ffd203;
+    transform: rotate(60deg);
+    z-index: 3;
+}
+
+.ruleta-wheel-box span:nth-child(3) {
+    background: #54cd28;
+    transform: rotate(120deg);
+    z-index: 4;
+}
+
+.ruleta-wheel-box span:nth-child(4) {
+    background: #129cf5;
+    transform: rotate(180deg);
+    z-index: 5;
+}
+
+.ruleta-wheel-box span:nth-child(5) {
+    background: #bb5ed3;
+    transform: rotate(240deg);
+    z-index: 6;
+}
+
+.ruleta-wheel-box span:nth-child(6) {
+    background: #ff4f45;
+    transform: rotate(300deg);
+    z-index: 7;
+    overflow: hidden;
+}
+
+.ruleta-wheel-box span:nth-child(6):before {
+    content: '';
+    position: absolute;
+    top: 33px;
+    left: -54px;
+    width: 100%;
+    height: 100%;
+    background: #ffd203;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.ruleta-wheel-box span:nth-child(6):after {
+    content: '';
+    position: absolute;
+    top: 31px;
+    left: -17px;
+    width: 100%;
+    height: 100%;
+    background: #fea503;
+    border-radius: 50%;
+}
+
+/* MODAL CONSEJOS */
+.ruleta-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 4, 22, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 100001;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.ruleta-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ruleta-modal-card {
+    background: rgba(18, 9, 32, 0.95);
+    border: 1px solid #b522ff;
+    box-shadow: 0 0 25px rgba(181, 34, 255, 0.4);
+    padding: 2rem;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+}
+
+.ruleta-modal-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #f3d0ff;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ruleta-modal-text {
+    font-family: 'Share Tech Mono', monospace;
+    color: #a78bfa;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.btn-ruleta-close {
+    background: rgba(10, 4, 22, 0.8);
+    border: 1px solid #b522ff;
+    color: #ffffff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-ruleta-close:hover {
+    background: rgba(181, 34, 255, 0.3);
+    box-shadow: 0 0 10px rgba(181, 34, 255, 0.6);
+}

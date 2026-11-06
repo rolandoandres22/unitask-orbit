@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../config/db';
+import { supabaseAdmin } from '../config/db.js';
 
 // OBTENER AMIGOS ACEPTADOS (CON RANGO)
 export const getFriendsByUser = async (userId: string) => {
