@@ -5,8 +5,8 @@ import {
   sendRequest, 
   respondRequest, 
   removeFriend 
-} from '../controllers/friendController';
-import { authenticateToken } from '../middlewares/authMiddleware';
+} from '../controllers/friendController.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
