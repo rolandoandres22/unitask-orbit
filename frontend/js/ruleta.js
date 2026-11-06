@@ -1,6 +1,6 @@
 // WIDGET DE RULETA DE CONSEJOS (SCI-FI / CYBERPUNK)
 // Detecta automáticamente si el backend está en local o en producción
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const API_URL_RULETA = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3000/api'//local
     : '/api';//ruta dinamica para versel
 
@@ -72,7 +72,7 @@ async function girarRuletaConsejo() {//Realiza la animación de giro
 
     try {
         // Petición HTTP GET al endpoint de consejos
-        const response = await fetch(`${API_URL}/consejos/aleatorio?t=${Date.now()}`, {
+        const response = await fetch(`${API_URL_RULETA}/consejos/aleatorio?t=${Date.now()}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
