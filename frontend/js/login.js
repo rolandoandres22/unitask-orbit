@@ -1,11 +1,11 @@
 // Configuración dinámica de API (Local vs Vercel Production)
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3000/api'      // Entorno de desarrollo local
-    : `${window.location.origin}/api`; // Entorno Vercel (resuelve a https://tu-app.vercel.app/api)
+ const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000/api'//usar esta ruta en local
+    : '/api';//usar esta ruta en versel sino no funca
     
 let currentMode = 'login';
 
-// VERIFICACIÓN DE SESIÓN ACTIVA (AUTO-REDIRECT)
+// VERIFICACIÓN DE SESIÓN ACTIVA
     window.addEventListener('load', () => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');

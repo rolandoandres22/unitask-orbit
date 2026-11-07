@@ -1,34 +1,19 @@
 import { Router } from 'express';
-import { 
-  getMyGroups, 
-  createGroup, 
-  inviteFriend, 
-  getPendingInvites, 
-  respondInvite, getMembers 
-} from '../controllers/groupController.js';
-import { authenticateToken } from '../middlewares/authMiddleware.js';
+// Importación de controladores para la gestión de grupos
+import { getMyGroups, createGroup, inviteFriend, getPendingInvites, respondInvite, getMembers } from '../controllers/groupController.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js';// Middleware de autenticación para validar el token JWT
 
-const router = Router();
+const router = Router();// Inicialización del enrutador de Express
 
-// Todas las rutas de grupos requieren token de autenticación
-router.use(authenticateToken);
 
-// 1. Obtener la lista de grupos activos del usuario autenticado
-router.get('/', getMyGroups);
+router.use(authenticateToken);// Todas las rutas de grupos requieren token de autenticación
 
-// 2. Crear un nuevo grupo de trabajo
-router.post('/', createGroup);
 
-// 3. Invitar a un amigo al grupo
-router.post('/invitar', inviteFriend);
-
-// 4. Obtener invitaciones de grupo pendientes enviadas al usuario
-router.get('/invitaciones/pendientes', getPendingInvites);
-
-// 5. Aceptar o rechazar una invitación a un grupo
-router.post('/responder-invitacion', respondInvite);
-
-// Endpoint para traer integrantes
-router.get('/:id/miembros', authenticateToken, getMembers);
-
+router.get('/', getMyGroups);//obtener la lista de grupos activos del usuario autenticado
+router.post('/', createGroup);//crear un nuevo grupo de trabajo
+router.post('/invitar', inviteFriend);//invitar a un amigo al grupo
+router.get('/invitaciones/pendientes', getPendingInvites);//obtener invitaciones de grupo pendientes enviadas al usuario
+router.post('/responder-invitacion', respondInvite);//aceptar o rechazar una invitación a un grupo
+router.get('/:id/miembros', authenticateToken, getMembers);//endpoint para traer integrantes
+// Exportación del enrutador
 export default router;

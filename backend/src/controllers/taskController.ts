@@ -1,10 +1,12 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middlewares/authMiddleware.js';
+// Importación del servicio con la lógica de base de datos para tareas
 import * as taskService from '../services/taskService.js';
 
+//Obtiene el listado completo de tareas (individuales y grupales)
 export const getTasks = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = req.user.id || req.user.id_usuario;
+    const userId = req.user.id || req.user.id_usuario;// Extraer UUID del usuario autenticado
     const { data, error } = await taskService.getTasksByUser(userId);
     
     if (error) return res.status(400).json({ error: error.message });
@@ -13,16 +15,16 @@ export const getTasks = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
+//Crea una nueva tarea (Individual o Grupal) según el tipo especificado
 export const createTask = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user.id || req.user.id_usuario;
     const { titulo, descripcion, fecha_inicio, fecha_limite, prioridad, tipo, id_grupo, id_usuario_asignado } = req.body;
-
+    // Validación de campos obligatorios requeridos
     if (!titulo || !fecha_limite) {
       return res.status(400).json({ error: 'El título y la fecha límite son obligatorios' });
     }
-
+    // 1. Caso de Creación de Tarea Grupal
     if (tipo === 'GRUPAL') {
       if (!id_grupo || !id_usuario_asignado) {
         return res.status(400).json({ error: 'Debes seleccionar un grupo y un responsable' });
@@ -42,7 +44,7 @@ export const createTask = async (req: AuthenticatedRequest, res: Response) => {
       return res.status(201).json(data[0]);
     }
 
-    // Tarea Individual por defecto
+    // 2. Caso de Creación de Tarea Individual
     const { data, error } = await taskService.createTask(
       userId,
       titulo,
@@ -58,7 +60,7 @@ export const createTask = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
+//Marca una tarea como COMPLETADA
 export const completeTask = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user.id || req.user.id_usuario;
@@ -77,7 +79,7 @@ export const completeTask = async (req: AuthenticatedRequest, res: Response) => 
   }
 };
 
-
+//Edita y actualiza los campos de una tarea
 export const updateTask = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user.id || req.user.id_usuario;
@@ -107,7 +109,7 @@ export const updateTask = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-// CANCELAR TAREA (SOFT DELETE / UPDATE ESTADO)
+//Cancela una tarea cambiando su estado a CANCELADA
 export const cancelTask = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user.id || req.user.id_usuario;
@@ -127,7 +129,7 @@ export const cancelTask = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-// ELIMINAR TAREA (HARD DELETE / DELETE FISICO)
+//Elimina físicamente una tarea individual de la base de datos
 export const deleteTask = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user.id || req.user.id_usuario;

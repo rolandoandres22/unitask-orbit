@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '../config/db.js';
-
+//Calcula y consolida las métricas de rendimiento, progreso de rango de experiencia
 export const getEstadisticasUsuario = async (userId: string) => {
   // 1. Obtener datos del usuario (XP acumulado e id_rango)
   const { data: usuario, error: userError } = await supabaseAdmin
@@ -31,12 +31,12 @@ export const getEstadisticasUsuario = async (userId: string) => {
     .eq('id_usuario_asignado', userId);
 
   if (errInd || errGrup) throw new Error('Error al consultar métricas de tareas');
-
+  // Fusionar ambas fuentes de tareas en un único listado normalizado
   const todasTareas = [
     ...(tareasInd || []).map(t => ({ estado: t.estado, prioridad: t.prioridad })),
     ...(tareasGrup || []).map(tg => ({ estado: tg.estado, prioridad: tg.prioridad }))
   ];
-
+  // Cálculo de conteos globales y porcentaje de efectividad
   const totalCreadas = todasTareas.length;
   const completadas = todasTareas.filter(t => t.estado === 'COMPLETADA');
   const totalCompletadas = completadas.length;
@@ -45,7 +45,7 @@ export const getEstadisticasUsuario = async (userId: string) => {
   const porcentajeEfectividad = totalCreadas > 0 
     ? Math.round((totalCompletadas / totalCreadas) * 100) 
     : 0;
-
+  // Desglose de tareas completadas según su nivel de prioridad
   const completadasPorPrioridad = {
     ALTA: completadas.filter(t => t.prioridad === 'ALTA').length,
     MEDIA: completadas.filter(t => t.prioridad === 'MEDIA').length,
@@ -54,7 +54,6 @@ export const getEstadisticasUsuario = async (userId: string) => {
 
   // --- CÁLCULO DE RANGO BASADO 100% EN LA TABLA `rangos` DE LA BASE DE DATOS ---
   const xp = usuario.xp_acumulado || 0;
-  
   // Buscar en qué rango encaja según xp_minimo y xp_maximo de la BD
   let rangoActual = listaRangos?.find(r => xp >= r.xp_minimo && xp <= r.xp_maximo) 
                  || listaRangos?.find(r => r.id_rango === usuario.id_rango)
@@ -69,21 +68,21 @@ export const getEstadisticasUsuario = async (userId: string) => {
     // Si ya alcanzó o superó el máximo rango
     if (xp >= max) {
       porcentajeRango = 100;
-    } else {
+    } else {// muestra el porcentual del progreso dentro del nivel actual
       const xpEnNivel = xp - min;
       const xpRequeridoNivel = max - min;
       porcentajeRango = Math.min(Math.max(Math.round((xpEnNivel / xpRequeridoNivel) * 100), 0), 100);
     }
   }
 
-  // 5. Procedimientos almacenados en paralelo
+  // 5. Procedimientos almacenados en la BD
   const [rachaRes, diariasRes, mesRes, evolucionRes] = await Promise.all([
     supabaseAdmin.rpc('obtener_racha_usuario', { p_id_usuario: userId }),
     supabaseAdmin.rpc('obtener_tareas_diarias_usuario', { p_id_usuario: userId }),
     supabaseAdmin.rpc('obtener_tareas_mes_usuario', { p_id_usuario: userId }),
     supabaseAdmin.rpc('obtener_evolucion_actividad_usuario', { p_id_usuario: userId })
   ]);
-
+// retorno a la capa de controladores
   return {
     resumen: {
       total_tareas: totalCreadas,

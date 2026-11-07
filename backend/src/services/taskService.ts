@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '../config/db.js';
-
+// Consulta y unifica en una sola colección las tareas individuales y grupales asignadas a un usuario.
 export const getTasksByUser = async (userId: string) => {
   // 1. Consultar tareas individuales
   const { data: tareasIndividuales, error: errorInd } = await supabaseAdmin
@@ -59,7 +59,7 @@ export const getTasksByUser = async (userId: string) => {
 
   return { data: todasLasTareas, error: null };
 };
-
+//Inserta una nueva tarea individual en la base de datos.
 export const createTask = async (
   userId: string,
   titulo: string,
@@ -83,7 +83,7 @@ export const createTask = async (
     ])
     .select();
 };
-
+//Inserta una nueva tarea grupal en la BD tabla tareas_grupales
 export const createGroupTask = async (
   idGrupo: string,
   idUsuarioAsignado: string,
@@ -110,9 +110,7 @@ export const createGroupTask = async (
     .select();
 };
 
-/**
- * Función polimórfica para completar tareas individuales o grupales
- */
+//marca como completada tareas individuales o grupales
 export const completeTask = async (idTarea: string, userId: string) => {
   // 1. Intentar actualizar en tareas individuales
   const { data: indData, error: indError } = await supabaseAdmin
@@ -133,7 +131,7 @@ export const completeTask = async (idTarea: string, userId: string) => {
   // 2. Si no encontró filas en individuales, intentar completar como tarea grupal
   return await completeGroupTask(idTarea, userId);
 };
-
+//edita los datos de una tarea individual
 export const updateTask = async (idTarea: string, userId: string, taskData: any) => {
   return await supabaseAdmin
     .from('tareas')
@@ -153,7 +151,7 @@ export const cancelTask = async (idTarea: string, userId: string) => {
     .select();
 };
 
-// Borrado físico permanente de la fila
+// Borrado físico permanente de la fila, elimina de la BD
 export const deleteTask = async (idTarea: string, userId: string) => {
   return await supabaseAdmin
     .from('tareas')
@@ -162,7 +160,7 @@ export const deleteTask = async (idTarea: string, userId: string) => {
     .eq('id_usuario', userId);
 };
 
-// COMPLETAR TAREA GRUPAL
+// COMPLETAR TAREA GRUPAL y asigna xp
 export const completeGroupTask = async (idTareaGrupal: string, userId: string) => {
   const { data: tarea, error: fetchError } = await supabaseAdmin
     .from('tareas_grupales')
@@ -193,7 +191,7 @@ export const completeGroupTask = async (idTareaGrupal: string, userId: string) =
 
   // 2. Calcular XP según prioridad
   const xpGanado = tarea.prioridad === 'ALTA' ? 40 : tarea.prioridad === 'MEDIA' ? 25 : 10;
-
+  // Obtener la experiencia acumulada actual del usuario
   const { data: usuario } = await supabaseAdmin
     .from('usuarios')
     .select('xp_acumulado')
@@ -202,7 +200,7 @@ export const completeGroupTask = async (idTareaGrupal: string, userId: string) =
 
   const nuevoXp = (usuario?.xp_acumulado || 0) + xpGanado;
 
-  // 3. Actualizar XP del usuario
+  // 3. Actualizar XP del usuario en la tabla usuarios
   await supabaseAdmin
     .from('usuarios')
     .update({ xp_acumulado: nuevoXp })

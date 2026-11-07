@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { supabaseAdmin } from '../config/db.js';
-
+//Obtiene los datos completos del expediente del estudiante
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    // 1. Extraer ID del usuario autenticado vía JWT middleware
+    // 1. Extraer el UUID del usuario autenticado
     const userId = (req as any).user?.id || (req as any).user?.id_usuario;
 
     if (!userId) {
@@ -28,15 +28,15 @@ export const getProfile = async (req: Request, res: Response) => {
       .from('rangos')
       .select('*')
       .order('xp_minimo', { ascending: true });
-
+    // Determinar en qué rango encaja el XP acumulado
     let rangoActual = listaRangos?.find(
       (r) => xpActual >= r.xp_minimo && xpActual <= r.xp_maximo
     );
-
+    // Si el XP supera la tabla, asignar el rango máximo disponible
     if (!rangoActual && listaRangos && listaRangos.length > 0) {
       rangoActual = listaRangos[listaRangos.length - 1];
     }
-
+    // Calcular el porcentaje de progreso del barra de XP dentro del nivel actual
     const minXp = rangoActual?.xp_minimo ?? 0;
     const maxXp = rangoActual?.xp_maximo ?? 150;
     const xpEnNivel = xpActual - minXp;
@@ -127,7 +127,7 @@ export const getProfile = async (req: Request, res: Response) => {
       };
     });
 
-    // 5. Total acumulado de tareas pendientes (Individuales + Grupales)
+    // 5. Conteo total de misiones pendientes de resolución
     const tareasPendientesCount = todasMisiones.length;
 
     return res.status(200).json({
@@ -152,7 +152,7 @@ export const getProfile = async (req: Request, res: Response) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
+//Actualiza los datos personales básicos del usuario (Nombre Completo).
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id || (req as any).user?.id_usuario;
@@ -187,7 +187,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
+//Cambia la contraseña de la cuenta del usuario
 export const updatePassword = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id || (req as any).user?.id_usuario;
@@ -196,14 +196,14 @@ export const updatePassword = async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(401).json({ error: 'Usuario no autenticado' });
     }
-
+    // Regla de validación: mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#\-_])[A-Za-z\d@$!%*?&.#\-_]{8,}$/;
     if (!nueva_password || !passwordRegex.test(nueva_password)) {
       return res.status(400).json({ 
         error: 'La contraseña debe tener al menos 8 caracteres, mayúscula, minúscula, número y un carácter especial' 
       });
     }
-
+    // Actualización del usuario en Supabase Auth
     const { error } = await supabaseAdmin.auth.admin.updateUserById(
       userId,
       { password: nueva_password }

@@ -1,5 +1,5 @@
-import { supabaseAdmin } from '../config/db.js';
-
+import { supabaseAdmin } from '../config/db.js';//importa cliente con privi de admin para creación y edición
+//Obtiene el listado de los miembros del grupo
 export const getGroupMembers = async (id_grupo: string) => {
   const { data, error } = await supabaseAdmin
     .from('grupo_miembros')
@@ -25,9 +25,7 @@ export const getGroupMembers = async (id_grupo: string) => {
   }));
 };
 
-/**
- * Obtener grupos a los que pertenece el usuario con estado ACEPTADA
- */
+//Obtener grupos a los que pertenece el usuario actual
 export const getMyGroups = async (userId: string) => {
   const { data, error } = await supabaseAdmin
     .from('grupo_miembros')
@@ -58,9 +56,7 @@ export const getMyGroups = async (userId: string) => {
   return { data: groupsFormatted, error: null };
 };
 
-/**
- * Crear un nuevo grupo y agregar al creador automáticamente como LIDER y ACEPTADA
- */
+//Crear un nuevo grupo y agregar al creador automáticamente como LIDER
 export const createGroup = async (userId: string, nombreGrupo: string, descripcion?: string) => {
   // 1. Insertar el grupo
   const { data: grupo, error: groupError } = await supabaseAdmin
@@ -94,9 +90,7 @@ export const createGroup = async (userId: string, nombreGrupo: string, descripci
   return { data: grupo, error: null };
 };
 
-/**
- * Invitar a un amigo al grupo (Inserta en grupo_miembros con estado PENDIENTE)
- */
+//Invitar a un amigo al grupo (Inserta en grupo_miembros con estado PENDIENTE)
 export const inviteFriendToGroup = async (idGrupo: string, idUsuarioInvitado: string) => {
   const { data, error } = await supabaseAdmin
     .from('grupo_miembros')
@@ -113,9 +107,7 @@ export const inviteFriendToGroup = async (idGrupo: string, idUsuarioInvitado: st
   return { data, error };
 };
 
-/**
- * Obtener solicitudes de grupo pendientes enviadas al usuario actual (Columna derecha)
- */
+//Obtener solicitudes de grupo pendientes enviadas al usuario actual (Columna derecha)
 export const getPendingGroupInvites = async (userId: string) => {
   const { data, error } = await supabaseAdmin
     .from('grupo_miembros')
@@ -146,9 +138,7 @@ export const getPendingGroupInvites = async (userId: string) => {
   return { data: invitesFormatted, error: null };
 };
 
-/**
- * Responder invitación a grupo (ACEPTADA o RECHAZADA)
- */
+//Responder invitación a grupo si es ACEPTADA o RECHAZADA
 export const respondGroupInvite = async (idGrupoMiembro: number, userId: string, estado: 'ACEPTADA' | 'RECHAZADA') => {
   const { data, error } = await supabaseAdmin
     .from('grupo_miembros')

@@ -1,10 +1,11 @@
 import { Router } from 'express';
+// Importación de los controladores de tareas desde taskController
 import { getTasks, createTask, updateTask, completeTask, cancelTask, deleteTask } from '../controllers/taskController.js';
-import { authenticateToken } from '../middlewares/authMiddleware.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js';// Middleware de autenticación para validar el token JWT
 
-const router = Router();
+const router = Router();// Inicialización del enrutador de Express para el módulo de tareas
 
-router.use(authenticateToken);
+router.use(authenticateToken);// Aplica la verificación del token
 
 router.get('/', getTasks);//trae todas las tareas
 router.post('/', createTask);//crea una tarea

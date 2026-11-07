@@ -1,12 +1,12 @@
 import { supabaseAdmin } from '../config/db.js';
-
+//Obtiene un consejo académico/productivo de forma aleatoria
 export const getRandomConsejo = async () => {
   // Traemos los IDs disponibles en la tabla
   const { data: idList, error: idError } = await supabaseAdmin
     .from('consejos')
     .select('id_consejo');
-
-  if (idError || !idList || idList.length === 0) {
+  
+  if (idError || !idList || idList.length === 0) {//valida si no hay registro o si falla 
     console.error('Error o tabla vacía en Supabase:', idError?.message);
     return null;
   }
@@ -23,5 +23,5 @@ export const getRandomConsejo = async () => {
 
   if (error) throw error;
 
-  return consejo;
+  return consejo;//retorna el consejo elegido
 };

@@ -1,7 +1,8 @@
 import { supabaseAdmin } from '../config/db.js';
 
-// OBTENER AMIGOS ACEPTADOS (CON RANGO)
+// OBTENER LISTADO DE AMIGOS ACEPTADOS (CON RANGO)
 export const getFriendsByUser = async (userId: string) => {
+  //Consulta la tabla "amistades" realizando JOINs dobles hacia la tabla "usuarios" solicitante y receptor
   const { data, error } = await supabaseAdmin
     .from('amistades')
     .select(`
@@ -22,11 +23,13 @@ export const getFriendsByUser = async (userId: string) => {
       )
     `)
     .eq('estado_solicitud', 'ACEPTADA')
+    // Filtra las relaciones donde el usuario activo sea el solicitante O el receptor
     .or(`id_usuario_solicitante.eq.${userId},id_usuario_receptor.eq.${userId}`);
 
   if (error) return { data: null, error };
-
+  // Formatear el listado determinando de qué lado del vínculo está el amigo
   const friendsFormatted = data.map((rel: any) => {
+    // Si el usuario actual es el solicitante, el amigo es el receptor o al reves
     const friend = rel.id_usuario_solicitante === userId ? rel.receptor : rel.solicitante;
     const nombreRango = friend?.rangos?.nombre_rango || 'E';
 
@@ -66,7 +69,7 @@ export const getPendingRequests = async (userId: string) => {
 
 // ENVIAR SOLICITUD DE AMISTAD
 export const sendFriendRequest = async (solicitanteId: string, receptorId: string) => {
-  if (solicitanteId === receptorId) {
+  if (solicitanteId === receptorId) {// validación para evitar auto-solicitudes
     return { data: null, error: { message: 'No puedes enviarte una solicitud a ti mismo' } };
   }
 
@@ -84,7 +87,7 @@ export const sendFriendRequest = async (solicitanteId: string, receptorId: strin
 
 // RESPONDER SOLICITUD (ACEPTAR / RECHAZAR)
 export const respondToRequest = async (idAmistad: string, userId: string, estado: 'ACEPTAR' | 'RECHAZAR') => {
-  if (estado === 'RECHAZAR') {
+  if (estado === 'RECHAZAR') {// Si la acción es RECHAZAR, elimina físicamente el registro de la tabla
     const { error } = await supabaseAdmin
       .from('amistades')
       .delete()
@@ -95,7 +98,7 @@ export const respondToRequest = async (idAmistad: string, userId: string, estado
     return { message: 'Solicitud rechazada' };
   }
 
-  // ACEPTAR SOLICITUD
+  // Si la acción es ACEPTAR, actualiza el estado de la fila a 'ACEPTADA'
   const { data, error } = await supabaseAdmin
     .from('amistades')
     .update({ estado_solicitud: 'ACEPTADA' })
@@ -112,13 +115,14 @@ export const removeFriend = async (userId: string, friendId: string) => {
   return await supabaseAdmin
     .from('amistades')
     .delete()
+    // Utiliza una combinación lógica AND/OR para eliminar sin importar quién fue el solicitante
     .or(`and(id_usuario_solicitante.eq.${userId},id_usuario_receptor.eq.${friendId}),and(id_usuario_solicitante.eq.${friendId},id_usuario_receptor.eq.${userId})`);
 };
 
 // BUSCAR USUARIOS GLOBALMENTE (POR NOMBRE O #TAG)
 export const searchUsers = async (query: string, currentUserId: string) => {
-  const cleanQuery = query.replace('#', '').trim();
-
+  const cleanQuery = query.replace('#', '').trim();// Sanitiza el término eliminando el carácter '#' y espacios
+  // 1. Buscar usuarios excluyendo al usuario activo
   const { data: users, error } = await supabaseAdmin
     .from('usuarios')
     .select('id_usuario, nombre_completo, user_tag')
@@ -127,12 +131,12 @@ export const searchUsers = async (query: string, currentUserId: string) => {
     .limit(10);
 
   if (error) return { data: null, error };
-
+  // 2. Traer las relaciones de amistad del usuario
   const { data: relations } = await supabaseAdmin
     .from('amistades')
     .select('id_usuario_solicitante, id_usuario_receptor, estado_solicitud')
     .or(`id_usuario_solicitante.eq.${currentUserId},id_usuario_receptor.eq.${currentUserId}`);
-
+  // 3. Cruzar la lista de usuarios encontrados con las relaciones
   const resultsFormatted = users.map((u: any) => {
     const rel = relations?.find(
       r => r.id_usuario_solicitante === u.id_usuario || r.id_usuario_receptor === u.id_usuario
