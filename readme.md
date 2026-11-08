@@ -207,4 +207,4 @@ npm start
 
 ## 🛡️ Licencia y Créditos
 
-Desarrollado para el proyecto **UniTask**. TFG - Rolando Andres Palermo - Lic. en Informatica - Universidad Siglo 21
+Desarrolado por Rolando Andrés Palermo como Trabajo Final de Grado (TFG) para la Licenciatura en Informática de la Universidad Siglo 21.
