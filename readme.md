@@ -84,7 +84,7 @@ unitask/
 │   │   │   ├── ruletaService.ts
 │   │   │   └── estadisticasService.ts
 │   │   └── app.ts                   # Servidor Express principal
-│   ├── vercel.json                  # Configuración de Rewrites para Vercel
+│   ├── server.ts                    # Punto de entrada del backend
 │   ├── package.json
 │   └── tsconfig.json
 │
