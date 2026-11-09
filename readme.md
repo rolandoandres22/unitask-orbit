@@ -1,8 +1,8 @@
-# 🎓 UniTask - Orbit — Plataforma de Gestión de Tareas y Estudio Universitario Gamificado
+#  UniTask - Orbit — Plataforma de Gestión de Tareas y Estudio Universitario Gamificado
 
 **UniTask** es una plataforma web integral diseñada para ayudar a estudiantes universitarios a organizar sus tareas académicas, cooperar en grupos de estudio y mantenerse motivados a través de un sistema de gamificación con rangos, niveles de experiencia (XP), racha de días y recompensas.
 
-## 🚀 Características Principales
+##  Características Principales
 
 * **Gestión de Tareas:**
   * Creación, edición, completado y cancelación de tareas individuales y grupales.
@@ -26,7 +26,7 @@
 * **Dashboard y Analíticas:**
   * Métricas completas de efectividad, distribución por prioridad y evolución histórica de actividad.
 
-## 🛠️ Tecnologías Utilizadas
+##  Tecnologías Utilizadas
 
 ### **Backend**
 * **Node.js** con **TypeScript** y **Express**.
@@ -38,7 +38,7 @@
 * Estructura SPA/Multipágina basada en Vistas Modularizadas (`pages/`).
 * Comunicación mediante `fetch` dinámico consumiendo los endpoints REST (`/api/*`).
 
-## 🗄️ Inicialización de la Base de Datos (`config/schema.sql`)
+##  Inicialización de la Base de Datos (`config/schema.sql`)
 
 Para clonar la estructura completa de la base de datos (tablas, rangos iniciales, procedimientos RPC y triggers automáticos), sigue estos pasos desde la web de Supabase:
 
@@ -49,7 +49,7 @@ Para clonar la estructura completa de la base de datos (tablas, rangos iniciales
 5. Haz clic en el botón **Run** (botón verde en la parte superior derecha).
 6. ¡Listo! Se habrán creado todas las tablas, claves foráneas, rangos iniciales, funciones RPC y triggers de gamificación.
 
-## 📂 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 unitask/
@@ -124,17 +124,35 @@ unitask/
     └── vercel.json                  # Configuración de rutas para despliegue en Versel
 ```
 
-## 💻 Guía Paso a Paso para Levantar el Servidor Local
 
-### **1. Requisitos Previos**
+## Guía Paso a Paso para Levantar el Servidor Local
 
-* **Node.js** (v18 o superior).
-* **npm** o **yarn**.
-* Proyecto activo en **Supabase** (con URL y claves de servicio).
+### 1. Requisitos Previos
 
-### **2. Configuración de Variables de Entorno**
+Antes de comenzar, asegúrate de tener instaladas las siguientes herramientas:
 
-Crea un archivo `.env` en la raíz de la carpeta `backend/` con las siguientes variables:
+- **Git:** Para clonar el repositorio desde GitHub.
+- **Node.js:** Versión 18 o superior.
+- **npm:** Gestor de paquetes incluido con Node.js.
+- **Supabase:** Proyecto activo con URL y claves de acceso.
+
+### 2. Clonación del Repositorio
+
+Abre una terminal (Git Bash, PowerShell o CMD) y ejecuta el siguiente comando para descargar el código fuente del proyecto:
+
+```bash
+git clone https://github.com/rolandoandres22/unitask-orbit.git
+```
+
+Una vez finalizada la descarga, accede al directorio del proyecto:
+
+```bash
+cd unitask-orbit
+```
+
+### 3. Configuración de Variables de Entorno
+
+Dentro de la carpeta `backend/`, crea un archivo llamado `.env` con las siguientes variables:
 
 ```env
 PORT=3000
@@ -143,40 +161,47 @@ SUPABASE_ANON_KEY=tu_clave_anonima_publica
 SUPABASE_SERVICE_ROLE_KEY=tu_clave_de_servicio_admin
 ```
 
-### **3. Instalación de Dependencias**
+**Importante:** Reemplaza los valores de ejemplo por las credenciales de tu proyecto de Supabase. Nunca compartas la clave `SUPABASE_SERVICE_ROLE_KEY` ni incluyas el archivo `.env` en el repositorio público.
 
-Navega a la carpeta del backend e instala los módulos requeridos:
+### 4. Instalación de Dependencias
+
+Desde la raíz del proyecto clonado, accede a la carpeta del backend:
 
 ```bash
 cd backend
+```
+
+Instala las dependencias necesarias:
+
+```bash
 npm install
 ```
 
-### **4. Ejecución en Entorno de Desarrollo**
+### 5. Ejecución en Entorno de Desarrollo
 
-Ejecuta el servidor con recarga en vivo:
+Para iniciar el servidor de desarrollo, ejecuta:
 
 ```bash
 npm run dev
 ```
 
-El servidor estará escuchando en `http://localhost:3000`.
+El servidor estará disponible en:
 
-### **5. Compilación para Producción (Build)**
+`http://localhost:3000`
 
-Para verificar la compilación TypeScript a código JavaScript nativo en formato ESM:
+### 6. Compilación para Producción (Build)
+
+Para compilar el código TypeScript y ejecutar la versión de producción:
 
 ```bash
 npm run build
 npm start
 ```
 
-## ⚡ Notas sobre el Despliegue en Vercel
 
-1. **Extensiones ESM Obligatorias:**
-   Dado que el backend utiliza ES Modules (`"type": "module"` en `package.json`), **todas las importaciones locales** en TypeScript deben incluir la extensión `.js` al final de la ruta del archivo (ejemplo: `import { db } from '../config/db.js';`). Esto previene el error `ERR_MODULE_NOT_FOUND` al ejecutar funciones Serverless en Vercel.
+##  Notas sobre el Despliegue en Vercel
 
-2. **Configuración `vercel.json`:**
+1. **Configuración `vercel.json`:**
    Asegúrate de incluir el archivo `vercel.json` para redirigir las solicitudes a Express:
 
 ```json
@@ -205,6 +230,7 @@ npm start
 }
 ```
 
-## 🛡️ Licencia y Créditos
+##  Licencia y Créditos
 
-Desarrolado por Rolando Andrés Palermo como Trabajo Final de Grado (TFG) para la Licenciatura en Informática de la Universidad Siglo 21.
+Desarrolado por Rolando Andrés Palermo como Trabajo Final de Grado (TFG) para la Licenciatura en Informática. 
+Universidad Siglo 21.
