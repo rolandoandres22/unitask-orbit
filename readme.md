@@ -93,31 +93,31 @@ unitask/
     ├── js/                          # Lógica y scripts globales / Helpers de API
     ├── pages/                       # Vistas y módulos de la interfaz de usuario
     │   ├── amigos/                  # Módulo Red de Estudiantes
-    │   │   ├── css/
-    │   │   ├── js/
+    │   │   ├── css/amigos.css
+    │   │   ├── js/amigos.js
     │   │   └── amigos.html
     │   ├── css/                     # Estilos compartidos de maquetación
     │   │   ├── header.css           # Barra superior de navegación y perfil
     │   │   └── menu.css             # Menú lateral principal
     │   ├── dashboard/               # Panel Principal / Misiones Prioritarias
-    │   │   ├── css/
-    │   │   ├── js/
+    │   │   ├── css/dashboard.css
+    │   │   ├── js/dashboard.js
     │   │   └── dashboard.html
     │   ├── estadisticas/            # Módulo de Analíticas y Gráficos
-    │   │   ├── css/
-    │   │   ├── js/
+    │   │   ├── css/estadisticas.css
+    │   │   ├── js/estadisticas.js
     │   │   └── estadisticas.html
     │   ├── grupos/                  # Módulo de Escuadrones y Trabajo Grupal
-    │   │   ├── css/
-    │   │   ├── js/
+    │   │   ├── css/grupos.css
+    │   │   ├── js/grupos.js
     │   │   └── grupos.html
     │   ├── perfil/                  # Ficha del Estudiante y Ajustes de Cuenta
-    │   │   ├── css/
-    │   │   ├── js/
+    │   │   ├── css/perfil.css
+    │   │   ├── js/perfil.js
     │   │   └── perfil.html
     │   └── tareas/                  # Gestor General de Tareas e Historial
-    │       ├── css/
-    │       ├── js/
+    │       ├── css/tareas.css
+    │       ├── js/tareas.js
     │       └── tareas.html
     ├── index.html                   # Página de Inicio / Landing & Autenticación
     ├── .gitignore
@@ -198,6 +198,25 @@ npm run build
 npm start
 ```
 
+### Acceso a la aplicación en desarrollo local
+
+Una vez iniciado el backend mediante `npm run dev`,
+verifica su funcionamiento ingresando a:
+
+http://localhost:3000/api/health
+
+Para ejecutar el frontend:
+
+1. Abre la carpeta `frontend/` en Visual Studio Code.
+2. Utiliza un servidor HTTP local, por ejemplo, la
+   extensión Live Server.
+3. Abre el archivo `index.html` mediante Live Server.
+4. La interfaz se comunicará con el backend disponible
+   en `http://localhost:3000/api`.
+
+Es necesario mantener ambos servidores activos
+durante las pruebas locales.
+
 
 ##  Notas sobre el Despliegue en Vercel
 
@@ -229,6 +248,21 @@ npm start
   ]
 }
 ```
+
+### Aplicación desplegada
+
+https://unitask-orbit.vercel.app/
+
+
+### Video demostrativo
+
+https://youtu.be/3Fm2oaEJxvs
+
+El video presenta los principales módulos del prototipo:
+autenticación, tareas individuales, gamificación,
+amistades, grupos de estudio, estadísticas y
+ruleta de consejos.
+
 
 ##  Licencia y Créditos
 
